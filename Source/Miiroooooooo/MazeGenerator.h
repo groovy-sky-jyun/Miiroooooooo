@@ -20,6 +20,15 @@ public:
 	TArray<bool> bRow;
 };
 
+UENUM(BlueprintType)
+enum class EDirectionWall : uint8
+{
+	Front     UMETA(DisplayName = "Front"),
+	Bottom   UMETA(DisplayName = "Bottom"),
+	Left   UMETA(DisplayName = "Left"),
+	Right  UMETA(DisplayName = "Right")
+};
+
 UCLASS()
 class MIIROOOOOOOO_API AMazeGenerator : public AActor
 {
@@ -49,10 +58,10 @@ protected:
 	TArray<FStructArray> MazeGrid;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall")
-	int Width = 5;
+	int Width = 15;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall")
-	int Height = 5;
+	int Height = 15;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall")
 	TArray<AWall*> Stack;
@@ -60,6 +69,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wall")
 	TArray<FStructArray> CheckList;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TMap<EDirectionWall, int32> DirectionCountMap;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	AWall* PreviousWall;
 
 	UFUNCTION()
 	void GenerateMaze();
@@ -72,5 +86,8 @@ protected:
 
 	UFUNCTION()
 	void DeleteWall(AWall* OriginWall, AWall* NeighborWall); 
+
+	UFUNCTION()
+	void WallDirectionCount(AWall* OriginWall);
 
 };

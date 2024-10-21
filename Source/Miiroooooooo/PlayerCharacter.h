@@ -57,6 +57,6 @@ protected:
 	class USpringArmComponent* CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera")
-	class UCameraComponent* FollowCamera;
+	class UCameraComponent* CameraComponent;
 	
 };

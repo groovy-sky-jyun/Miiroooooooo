@@ -15,17 +15,19 @@ APlayerCharacter::APlayerCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	//ÇÃ·¹ÀÌ¾î°¡ ¶Û ¶§ Ä«¸Þ¶ó°¡ °°ÀÌ Èçµé·Á¼­ ½ÇÁ¦ ¶Ù´Â ´À³¦(¸ôÀÔ°¨)
 	CameraBoom->SetupAttachment(GetMesh(), FName("head"));
-	//CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 100.0f;
+	CameraBoom->TargetArmLength = 2.0f;
 	CameraBoom->bUsePawnControlRotation = true;
-	CameraBoom->bDoCollisionTest = false;
+	CameraBoom->bDoCollisionTest = true;
 	
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom);
-	FollowCamera->bUsePawnControlRotation = false;
+
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	CameraComponent->SetupAttachment(CameraBoom);
+	CameraComponent->bUsePawnControlRotation = false;
+
 	
 	MaxSpeed = 500.0f;
 	GetCharacterMovement()->MaxWalkSpeed = MaxSpeed;

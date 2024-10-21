@@ -51,7 +51,7 @@ void AWall::Tick(float DeltaTime)
 
 bool AWall::FindCompleteWall()
 {
-	return FrontWall && BottomWall && RightWall && LeftWall;
+	return IsValid(FrontWall) && IsValid(BottomWall) && IsValid(RightWall) && IsValid(LeftWall);
 }
 
 void AWall::DeleteOnceWall(FString WallDirection)
@@ -80,4 +80,24 @@ void AWall::DeleteOnceWall(FString WallDirection)
 		LeftWall->DestroyComponent();
 		LeftWall = nullptr;
 	}
+}
+
+bool AWall::CheckFrontWall()
+{
+	return IsValid(FrontWall);
+}
+
+bool AWall::CheckBottomWall()
+{
+	return IsValid(BottomWall);
+}
+
+bool AWall::CheckRightWall()
+{
+	return IsValid(RightWall);
+}
+
+bool AWall::CheckLeftWall()
+{
+	return IsValid(LeftWall);
 }

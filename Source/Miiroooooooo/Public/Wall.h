@@ -55,4 +55,13 @@ public:
 
 	UFUNCTION()
 	void DeleteOnceWall(FString WallDirection);
+	
+	UFUNCTION()
+	bool CheckFrontWall();
+	UFUNCTION()
+	bool CheckBottomWall();
+	UFUNCTION()
+	bool CheckRightWall();
+	UFUNCTION()
+	bool CheckLeftWall();
 };
