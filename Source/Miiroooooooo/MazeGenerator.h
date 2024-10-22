@@ -75,6 +75,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	AWall* PreviousWall;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<AWall*> Queue;
+
+
 	UFUNCTION()
 	void GenerateMaze();
 
@@ -90,4 +94,15 @@ protected:
 	UFUNCTION()
 	void WallDirectionCount(AWall* OriginWall);
 
+	UFUNCTION()
+	void BFSMakePassage(int x, int y);
+
+	UFUNCTION()
+	void CheckUnVisitQueue(int x, int y);
+
+	UFUNCTION()
+	void DeleteRandWall(AWall* RandWall);
+
+	UFUNCTION()
+	TArray<AWall*> CheckVisitQueue(int x, int y, TArray<AWall*>List);
 };

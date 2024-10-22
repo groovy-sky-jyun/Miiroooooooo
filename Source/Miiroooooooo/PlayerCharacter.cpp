@@ -18,8 +18,8 @@ APlayerCharacter::APlayerCharacter()
 	
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	//ÇÃ·¹ÀÌ¾î°¡ ¶Û ¶§ Ä«¸Þ¶ó°¡ °°ÀÌ Èçµé·Á¼­ ½ÇÁ¦ ¶Ù´Â ´À³¦(¸ôÀÔ°¨)
-	CameraBoom->SetupAttachment(GetMesh(), FName("head"));
-	CameraBoom->TargetArmLength = 2.0f;
+	CameraBoom->SetupAttachment(RootComponent);
+	//CameraBoom->TargetArmLength = 2.0f;
 	CameraBoom->bUsePawnControlRotation = true;
 	CameraBoom->bDoCollisionTest = true;
 	
@@ -51,6 +51,9 @@ void APlayerCharacter::BeginPlay()
 	}
 
 	CurrentPitch = Controller->GetControlRotation().Pitch;
+
+	GetMesh()->SetOwnerNoSee(true); 
+
 }
 
 // Called every frame

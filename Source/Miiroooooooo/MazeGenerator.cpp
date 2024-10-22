@@ -42,6 +42,9 @@ void AMazeGenerator::BeginPlay()
     // 길만들기
     MakePassages(0,0);
 
+    //Queue.Add(MazeGrid[0].Row[0]);
+    //BFSMakePassage(0,0);
+
     // 입구, 출구
     MazeGrid[0].Row[0]->DeleteOnceWall("Bottom"); //입구
     MazeGrid[Width-1].Row[Height-1]->DeleteOnceWall("Front"); //출구
@@ -316,4 +319,111 @@ void AMazeGenerator::WallDirectionCount(AWall* OriginWall)
         DirectionCountMap[EDirectionWall::Left] = 0;
     }
     
+}
+
+void AMazeGenerator::BFSMakePassage(int x, int y)
+{
+    /*
+   * [방문하지 않은 곳이라면]
+   * 방문 = true
+   */
+    if (!CheckList[x].bRow[y]) { 
+        CheckList[x].bRow[y] = true; 
+    } 
+
+    /*
+    * [주변 방문하지 않은 큐브들 Queue에 추가]
+    */
+    CheckUnVisitQueue(x, y);
+
+    /*
+    * [주변 방문하지 않은 큐브가 하나라도 있다면]
+    * 1) Queue 에서 랜덤으로 한개 큐브 뽑음
+    * 2) 랜덤 큐브와 현재 큐브 사이의 벽 제거
+    * 3) Queue 에서 뽑힌 큐브 값 삭제
+    */ 
+    if (Queue.Num() > 0) {
+        int32 ShuffleNum = FMath::RandRange(0, Queue.Num() - 1);
+        DeleteRandWall(Queue[ShuffleNum]);
+        x = Queue[ShuffleNum]->IndexX;
+        y = Queue[ShuffleNum]->IndexY;
+        Queue.RemoveAt(ShuffleNum);
+        BFSMakePassage(x, y);
+    }
+}
+
+void AMazeGenerator::CheckUnVisitQueue(int x, int y)
+{
+    //현재 블럭의 위측 블럭 확인
+    if (y + 1 < Height) {
+        if (!Queue.Contains(MazeGrid[x].Row[y + 1]) && !CheckList[x].bRow[y + 1]) { //방문하지 않은 곳이라면
+            Queue.Add(MazeGrid[x].Row[y + 1]);
+        }
+    }
+
+    //현재 블럭의 아래측 블럭 확인
+    if (y - 1 >= 0) {
+        if (!Queue.Contains(MazeGrid[x].Row[y - 1]) && !CheckList[x].bRow[y - 1]) { //방문하지 않은 곳이라면
+            Queue.Add(MazeGrid[x].Row[y - 1]);
+        }
+    }
+
+    //현재 블럭의 우측 블럭 확인
+    if (x + 1 < Width) {
+        if (!Queue.Contains(MazeGrid[x + 1].Row[y ]) && !CheckList[x + 1].bRow[y]) { //방문하지 않은 곳이라면
+            Queue.Add(MazeGrid[x + 1].Row[y]);
+        }
+    }
+
+    //현재 블럭의 좌측 블럭 확인
+    if (x - 1 >= 0) {
+        if (!Queue.Contains(MazeGrid[x - 1].Row[y]) && !CheckList[x - 1].bRow[y]) { //방문하지 않은 곳이라면
+            Queue.Add(MazeGrid[x - 1].Row[y]);
+        }
+    }
+}
+
+void AMazeGenerator::DeleteRandWall(AWall* RandWall)
+{
+    //RandWall 주변에 방문한 노드 list에 담음
+    // 그 중 랜덤으로 하나와 벽 허뭄
+    TArray<AWall*> List;
+    List = CheckVisitQueue(RandWall->IndexX, RandWall->IndexY, List);
+
+    if (List.Num() > 0) {
+        int32 ShuffleNum = FMath::RandRange(0, List.Num() - 1);
+        DeleteWall(RandWall, List[ShuffleNum]);
+    }
+}
+
+TArray<AWall*> AMazeGenerator::CheckVisitQueue(int x, int y, TArray<AWall*>List)
+{
+    //현재 블럭의 위측 블럭 확인
+    if (y + 1 < Height) {
+        if (CheckList[x].bRow[y + 1]) { //방문하지 않은 곳이라면
+            List.Add(MazeGrid[x].Row[y + 1]);
+        }
+    }
+
+    //현재 블럭의 아래측 블럭 확인
+    if (y - 1 >= 0) {
+        if (CheckList[x].bRow[y - 1]) { //방문하지 않은 곳이라면
+            List.Add(MazeGrid[x].Row[y - 1]);
+        }
+    }
+
+    //현재 블럭의 우측 블럭 확인
+    if (x + 1 < Width) {
+        if (CheckList[x + 1].bRow[y]) { //방문하지 않은 곳이라면
+            List.Add(MazeGrid[x + 1].Row[y]);
+        }
+    }
+
+    //현재 블럭의 좌측 블럭 확인
+    if (x - 1 >= 0) {
+        if (CheckList[x - 1].bRow[y]) { //방문하지 않은 곳이라면
+            List.Add(MazeGrid[x - 1].Row[y]);
+        }
+    }
+    return List;
 }
