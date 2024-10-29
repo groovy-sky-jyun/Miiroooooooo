@@ -50,6 +50,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall")
 	int IndexY;
 
+
 	UFUNCTION()
 	bool FindCompleteWall();
 

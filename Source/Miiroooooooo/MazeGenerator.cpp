@@ -38,12 +38,9 @@ void AMazeGenerator::BeginPlay()
     DirectionCountMap.Add(EDirectionWall::Left, 0);
     DirectionCountMap.Add(EDirectionWall::Right, 0);
 
-    PreviousWall = MazeGrid[0].Row[0];
+
     // 길만들기
     MakePassages(0,0);
-
-    //Queue.Add(MazeGrid[0].Row[0]);
-    //BFSMakePassage(0,0);
 
     // 입구, 출구
     MazeGrid[0].Row[0]->DeleteOnceWall("Bottom"); //입구
@@ -85,6 +82,9 @@ void AMazeGenerator::GenerateMaze()
 
 void AMazeGenerator::MakePassages(int x, int y)
 {
+    UE_LOG(LogTemp, Log, TEXT("MazeGrid : [%d][%d]"), x, y);
+    FirstRemoveCount++;
+    WallCount++;
     /*
     * [방문하지 않은 곳이라면]
     * Stack에 Add
@@ -99,32 +99,52 @@ void AMazeGenerator::MakePassages(int x, int y)
     * [주변 방문하지 않은 큐브들 List 가져오기]
     */
     TArray<AWall*> FourWallList;
-    FourWallList = CheckVisitList(x, y, FourWallList); 
-   
+    FourWallList = CheckVisitList(x, y, FourWallList);
+
     /*
     * [주변 방문하지 않은 큐브가 하나라도 있다면]
-    * 1) List 에서 랜덤으로 한개 큐브 뽑음
-    * 2) 랜덤 큐브와 현재 큐브 사이의 벽 제거
-    * 3) 4개 이상 연속되어있는 벽이 있다면 랜덤 한개 뚫음
+    * 1) 방문하지 않은 큐브 List 생성
+    * 2) 현재큐브까지 3개 이상 같은 방향으로 이동했다면 List에서 해당 방향 제외
+    * 3) List 에서 랜덤 큐브 뽑음
+    * 4) 랜덤 큐브와 현재 큐브 사이의 벽 제거
     * 
     * [주변 방문하지 않은 큐브가 하나라도 없다면]
     * 1) Stack 에서 Pop 한다.
     * 2) Stack 의 Top 큐브 주변에 방문하지 않은 큐브가 있는지 확인한다.
     */
-    if (FourWallList.Num() > 0) {
+    if (CheckSequenceDirection() != "None") { //방향 연속 조건 위배 하면 해당 방향 큐브 List에서 제거
+        RemoveSequenceList(FourWallList, MazeGrid[x].Row[y]);
+    }
+    
+    for (int i = 0; i < FourWallList.Num(); i++) {
+        UE_LOG(LogTemp, Warning, TEXT("FourWallList[%d][%d]"), FourWallList[i]->IndexX, FourWallList[i]->IndexY);
+    }
 
+    if (FourWallList.Num() > 0) {
         int32 ShuffleNum = FMath::RandRange(0, FourWallList.Num() - 1);
         DeleteWall(MazeGrid[x].Row[y], FourWallList[ShuffleNum]);
-        WallDirectionCount(MazeGrid[x].Row[y]);
-        PreviousWall = MazeGrid[x].Row[y];
+        DirectionCounting(MazeGrid[x].Row[y], FourWallList[ShuffleNum]);
+        if (FirstRemoveCount == 4 || WallCount == 15) {
+            AddDeleteWall(MazeGrid[x].Row[y]);
+            WallCount = 0;
+        }
         MakePassages(FourWallList[ShuffleNum]->IndexX, FourWallList[ShuffleNum]->IndexY);
     }
     else {
-        AWall* PopCube = Stack.Pop();
+        Stack.Pop();
+        PopCount++;
+        if (PopCount == 10) {
+            AddDeleteWall(MazeGrid[x].Row[y]);
+            PopCount = 0;
+        }
         if (Stack.Top()->IndexX != 0 || Stack.Top()->IndexY != 0) {
             MakePassages(Stack.Top()->IndexX, Stack.Top()->IndexY);
         }
+        else {
+            return;
+        }
     }
+    
 }
 
 TArray<AWall*> AMazeGenerator::CheckVisitList(int x, int y, TArray<AWall*> FourWallList)
@@ -187,243 +207,119 @@ void AMazeGenerator::DeleteWall(AWall* OriginWall, AWall* NeighborWall)
 
 }
 
-void AMazeGenerator::WallDirectionCount(AWall* OriginWall)
+FString AMazeGenerator::CheckSequenceDirection()
 {
-    int x = OriginWall->IndexX;
-    int y = OriginWall->IndexY;
+    /*
+    * 현재 큐브 위치에서 확인했을 때 연속적으로 방향이 이어졌는지 확인
+    */
+    if (DirectionCountMap[EDirectionWall::Front] >= 2) {
+        return "Front";
+    }
+    else if (DirectionCountMap[EDirectionWall::Bottom] >= 2) {
+        return "Bottom";
+    }
+    else if (DirectionCountMap[EDirectionWall::Right] >= 2) {
+        return "Right";
+    }
+    else if (DirectionCountMap[EDirectionWall::Left] >= 2) {
+        return "Left";
+    }
+    else 
+        return "None";
+}
 
-    /* 
-    * [origin 큐브의 상하좌우면 중 어떤 면이 남아있는지를 확인]
-    * x가 0이면 BottomWall은 포함하지 않는다.
-    * y가 0이면 LeftWall은 포함하지 않는다.
-    * x가 height-1 이면 FrontWall 은 포함하지 않는다.
-    * y가 width-1 이면 RightWall 은 포함하지 않는다.
-    * 벽이 끊기면 해당 벽은 카운트를 초기화시킨다.
-    */ 
-    if (OriginWall->CheckFrontWall() && x != Height - 1) {
+void AMazeGenerator::RemoveSequenceList(TArray<AWall*>& List, AWall* Origin)
+{   /*
+    * 연속 방향에 위치하는 큐브는 List에서 제거(List에 있다면)
+    */
+    int x = Origin->IndexX;
+    int y = Origin->IndexY;
+    FString Direction = CheckSequenceDirection();
+
+    if (Direction == "Front" && x+1<Height) {
+        if(List.Contains(MazeGrid[x + 1].Row[y]))
+            List.Remove(MazeGrid[x + 1].Row[y]);
+    }
+    else if(Direction == "Bottom" && x-1>=0) {
+        if(List.Contains(MazeGrid[x - 1].Row[y]))
+            List.Remove(MazeGrid[x - 1].Row[y]);
+    }
+    else if (Direction == "Right" && y+1<Width) {
+        if(List.Contains(MazeGrid[x].Row[y + 1]))
+            List.Remove(MazeGrid[x].Row[y+1]);
+    }
+    else if (Direction == "Left" && y-1>=0) {
+        if(List.Contains(MazeGrid[x].Row[y - 1]))
+            List.Remove(MazeGrid[x].Row[y-1]);
+    }
+}
+
+void AMazeGenerator::DirectionCounting(AWall* Origin, AWall* Neighbor)
+{
+    int x = Origin->IndexX;
+    int y = Origin->IndexY;
+    int nx = Neighbor->IndexX;
+    int ny = Neighbor->IndexY;
+
+    if (x - nx < 0) {
         DirectionCountMap[EDirectionWall::Front]++;
-        UE_LOG(LogTemp, Error, TEXT("4Wall add MazeGrid[%d][%d] : Front %d"), x, y, DirectionCountMap[EDirectionWall::Front]);
+        DirectionCountMap[EDirectionWall::Bottom] = 0;
+        DirectionCountMap[EDirectionWall::Right] = 0;
+        DirectionCountMap[EDirectionWall::Left] = 0;
     }
-    else if (!OriginWall->CheckFrontWall()) {
+    else if (x - nx > 0) {
         DirectionCountMap[EDirectionWall::Front]=0;
-    }
-
-    if (OriginWall->CheckBottomWall() && x != 0) {
         DirectionCountMap[EDirectionWall::Bottom]++;
-        UE_LOG(LogTemp, Error, TEXT("4Wall add MazeGrid[%d][%d] : Bottom %d"), x, y, DirectionCountMap[EDirectionWall::Bottom]);
-    }
-    else if (!OriginWall->CheckBottomWall()) {
-        DirectionCountMap[EDirectionWall::Bottom] = 0;
-    }
-
-    if (OriginWall->CheckRightWall() && y != Width -1) {
-        DirectionCountMap[EDirectionWall::Right]++;
-        UE_LOG(LogTemp, Error, TEXT("4Wall add MazeGrid[%d][%d] : Right %d"), x, y, DirectionCountMap[EDirectionWall::Right]);
-    }
-    else if (!OriginWall->CheckRightWall()) {
         DirectionCountMap[EDirectionWall::Right] = 0;
-    }
-
-    if (OriginWall->CheckLeftWall() && y != 0) {
-        DirectionCountMap[EDirectionWall::Left]++;
-        UE_LOG(LogTemp, Error, TEXT("4Wall add MazeGrid[%d][%d] : Left %d"), x, y, DirectionCountMap[EDirectionWall::Left]);
-    }
-    else if (!OriginWall->CheckLeftWall()) {
         DirectionCountMap[EDirectionWall::Left] = 0;
     }
-
-
-    /*
-   * [연속으로 4개의 벽이 이어져 있는곳 확인]
-   * if(Front 가 연속으로 이어져 있다면)
-   *    OriginWall 와 위의 큐브 사이 벽 허문다.
-   * if(Bottom 가 연속으로 이어져 있다면)
-   *    OriginWall 와 아래 큐브 사이 벽 허문다.
-   * if(Right 가 연속으로 이어져 있다면)
-   *    OriginWall 와 오른쪽 큐브 사이 벽 허문다.
-   * if(Left 가 연속으로 이어져 있다면)
-   *    OriginWall 와 왼쪽 큐브 사이 벽 허문다.
-   */
-    /*
-    * 지금 코드는 무조건 밑에서 위로, 왼쪽에서 오른쪽으로 이어지는 길을 대표적으로 생각했다.
-    * 하지만 위에서 아래로, 오른쪽에서 왼쪽으로 이어지는 길에 대해서는 shufflenum만큼 빼주는게 아니라
-    * 더해주어야한다. 이러한 경우도 추가해야한다.
-    */
-    int32 ShuffleNum = FMath::RandRange(0, 3);
-    if (DirectionCountMap[EDirectionWall::Front] >= 4) {
-        if(y < PreviousWall->IndexY) {//왼쪽으로 가는 방향
-            if (x + 1 < Height && y + ShuffleNum < Width) {
-                MazeGrid[x].Row[y + ShuffleNum]->DeleteOnceWall("Front");
-                MazeGrid[x + 1].Row[y + ShuffleNum]->DeleteOnceWall("Bottom");
-                UE_LOG(LogTemp, Warning, TEXT("4Wall delete MazeGrid[%d][%d] : Front"), x, y + ShuffleNum);
-            }
-        }
-        else { //오른쪽으로 가는 방향
-            if (x + 1 < Height && y - ShuffleNum >= 0) {
-                MazeGrid[x].Row[y - ShuffleNum]->DeleteOnceWall("Front");
-                MazeGrid[x + 1].Row[y - ShuffleNum]->DeleteOnceWall("Bottom");
-                UE_LOG(LogTemp, Warning, TEXT("4Wall delete MazeGrid[%d][%d] : Front"), x, y - ShuffleNum);
-            }
-        }
+    else if (y - ny < 0) {
         DirectionCountMap[EDirectionWall::Front] = 0;
-    }
-    else if (DirectionCountMap[EDirectionWall::Bottom] >= 4) {
-        if (y < PreviousWall->IndexY) {//왼쪽으로 가는 방향
-            if (x - 1 >= 0 && y + ShuffleNum < Width) {
-                MazeGrid[x].Row[y + ShuffleNum]->DeleteOnceWall("Bottom");
-                MazeGrid[x - 1].Row[y + ShuffleNum]->DeleteOnceWall("Front");
-                UE_LOG(LogTemp, Warning, TEXT("4Wall delete MazeGrid[%d][%d] : Bottom"), x, y + ShuffleNum);
-            }
-        }
-        else {//오른쪽으로 가는 방향
-            if (x - 1 >= 0 && y - ShuffleNum >= 0) { 
-                MazeGrid[x].Row[y - ShuffleNum]->DeleteOnceWall("Bottom"); 
-                MazeGrid[x - 1].Row[y - ShuffleNum]->DeleteOnceWall("Front"); 
-                UE_LOG(LogTemp, Warning, TEXT("4Wall delete MazeGrid[%d][%d] : Bottom"), x, y - ShuffleNum); 
-            }
-        }
         DirectionCountMap[EDirectionWall::Bottom] = 0;
-    }
-    else if (DirectionCountMap[EDirectionWall::Right] >= 4) {
-        if (x < PreviousWall->IndexX) {//아래쪽으로 가는 방향
-            if (y + 1 < Width && x + ShuffleNum < Height) {
-                MazeGrid[x + ShuffleNum].Row[y]->DeleteOnceWall("Right");
-                MazeGrid[x + ShuffleNum].Row[y + 1]->DeleteOnceWall("Left");
-                UE_LOG(LogTemp, Warning, TEXT("4Wall delete MazeGrid[%d][%d] : Right"), x + ShuffleNum, y);
-            }
-        }
-        else {//위쪽으로 가는 방향
-            if (y + 1 < Width && x - ShuffleNum >= 0) {
-                MazeGrid[x - ShuffleNum].Row[y]->DeleteOnceWall("Right");
-                MazeGrid[x - ShuffleNum].Row[y + 1]->DeleteOnceWall("Left");
-                UE_LOG(LogTemp, Warning, TEXT("4Wall delete MazeGrid[%d][%d] : Right"), x - ShuffleNum, y);
-            }
-        }
-        DirectionCountMap[EDirectionWall::Right] = 0;
-    }
-    else if (DirectionCountMap[EDirectionWall::Left] >= 4) {
-        if (x < PreviousWall->IndexX) {//아래쪽으로 가는 방향
-            if (y - 1 >= 0 && x + ShuffleNum <Height) {
-                MazeGrid[x + ShuffleNum].Row[y]->DeleteOnceWall("Left");
-                MazeGrid[x + ShuffleNum].Row[y - 1]->DeleteOnceWall("Right");
-                UE_LOG(LogTemp, Warning, TEXT("4Wall delete MazeGrid[%d][%d] : Left"), x + ShuffleNum, y);
-            }
-        }
-        else {
-            if (y - 1 >= 0 && x - ShuffleNum >= 0) {
-                MazeGrid[x - ShuffleNum].Row[y]->DeleteOnceWall("Left");
-                MazeGrid[x - ShuffleNum].Row[y - 1]->DeleteOnceWall("Right");
-                UE_LOG(LogTemp, Warning, TEXT("4Wall delete MazeGrid[%d][%d] : Left"), x - ShuffleNum, y);
-            }
-        }
+        DirectionCountMap[EDirectionWall::Right]++;
         DirectionCountMap[EDirectionWall::Left] = 0;
     }
-    
+    else if (y - ny > 0) {
+        DirectionCountMap[EDirectionWall::Front] = 0;
+        DirectionCountMap[EDirectionWall::Bottom] = 0;
+        DirectionCountMap[EDirectionWall::Right] = 0;
+        DirectionCountMap[EDirectionWall::Left]++;
+    }
+        
 }
 
-void AMazeGenerator::BFSMakePassage(int x, int y)
+void AMazeGenerator::AddDeleteWall(AWall* Origin)
 {
     /*
-   * [방문하지 않은 곳이라면]
-   * 방문 = true
-   */
-    if (!CheckList[x].bRow[y]) { 
-        CheckList[x].bRow[y] = true; 
-    } 
-
-    /*
-    * [주변 방문하지 않은 큐브들 Queue에 추가]
+    * 존재하는 벽만 List에 담기
     */
-    CheckUnVisitQueue(x, y);
+    TArray<AWall*> List;
+    int x = Origin->IndexX;
+    int y = Origin->IndexY;
+
+    if (x + 1 < Height && Origin->CheckFrontWall()) {
+        List.Add(MazeGrid[x + 1].Row[y]);
+    }
+    if (x - 1 >= 0 && Origin->CheckBottomWall()) {
+        List.Add(MazeGrid[x - 1].Row[y]);
+    }
+    if (y + 1 < Width && Origin->CheckRightWall()) {
+        List.Add(MazeGrid[x].Row[y + 1]);
+    }
+    if (y - 1 >= 0 && Origin->CheckLeftWall()) {
+        List.Add(MazeGrid[x].Row[y - 1]);
+    }
 
     /*
-    * [주변 방문하지 않은 큐브가 하나라도 있다면]
-    * 1) Queue 에서 랜덤으로 한개 큐브 뽑음
-    * 2) 랜덤 큐브와 현재 큐브 사이의 벽 제거
-    * 3) Queue 에서 뽑힌 큐브 값 삭제
-    */ 
-    if (Queue.Num() > 0) {
-        int32 ShuffleNum = FMath::RandRange(0, Queue.Num() - 1);
-        DeleteRandWall(Queue[ShuffleNum]);
-        x = Queue[ShuffleNum]->IndexX;
-        y = Queue[ShuffleNum]->IndexY;
-        Queue.RemoveAt(ShuffleNum);
-        BFSMakePassage(x, y);
-    }
-}
-
-void AMazeGenerator::CheckUnVisitQueue(int x, int y)
-{
-    //현재 블럭의 위측 블럭 확인
-    if (y + 1 < Height) {
-        if (!Queue.Contains(MazeGrid[x].Row[y + 1]) && !CheckList[x].bRow[y + 1]) { //방문하지 않은 곳이라면
-            Queue.Add(MazeGrid[x].Row[y + 1]);
-        }
-    }
-
-    //현재 블럭의 아래측 블럭 확인
-    if (y - 1 >= 0) {
-        if (!Queue.Contains(MazeGrid[x].Row[y - 1]) && !CheckList[x].bRow[y - 1]) { //방문하지 않은 곳이라면
-            Queue.Add(MazeGrid[x].Row[y - 1]);
-        }
-    }
-
-    //현재 블럭의 우측 블럭 확인
-    if (x + 1 < Width) {
-        if (!Queue.Contains(MazeGrid[x + 1].Row[y ]) && !CheckList[x + 1].bRow[y]) { //방문하지 않은 곳이라면
-            Queue.Add(MazeGrid[x + 1].Row[y]);
-        }
-    }
-
-    //현재 블럭의 좌측 블럭 확인
-    if (x - 1 >= 0) {
-        if (!Queue.Contains(MazeGrid[x - 1].Row[y]) && !CheckList[x - 1].bRow[y]) { //방문하지 않은 곳이라면
-            Queue.Add(MazeGrid[x - 1].Row[y]);
-        }
-    }
-}
-
-void AMazeGenerator::DeleteRandWall(AWall* RandWall)
-{
-    //RandWall 주변에 방문한 노드 list에 담음
-    // 그 중 랜덤으로 하나와 벽 허뭄
-    TArray<AWall*> List;
-    List = CheckVisitQueue(RandWall->IndexX, RandWall->IndexY, List);
-
+    * List 중 하나 랜덤 선택 후 삭제
+    */
     if (List.Num() > 0) {
         int32 ShuffleNum = FMath::RandRange(0, List.Num() - 1);
-        DeleteWall(RandWall, List[ShuffleNum]);
+        DeleteWall(MazeGrid[x].Row[y], List[ShuffleNum]);
+        UE_LOG(LogTemp, Error, TEXT("Add Delete Wall : List Shuffle[%d][%d]"), List[ShuffleNum]->IndexX, List[ShuffleNum]->IndexY);
     }
+   
+     
 }
 
-TArray<AWall*> AMazeGenerator::CheckVisitQueue(int x, int y, TArray<AWall*>List)
-{
-    //현재 블럭의 위측 블럭 확인
-    if (y + 1 < Height) {
-        if (CheckList[x].bRow[y + 1]) { //방문하지 않은 곳이라면
-            List.Add(MazeGrid[x].Row[y + 1]);
-        }
-    }
 
-    //현재 블럭의 아래측 블럭 확인
-    if (y - 1 >= 0) {
-        if (CheckList[x].bRow[y - 1]) { //방문하지 않은 곳이라면
-            List.Add(MazeGrid[x].Row[y - 1]);
-        }
-    }
-
-    //현재 블럭의 우측 블럭 확인
-    if (x + 1 < Width) {
-        if (CheckList[x + 1].bRow[y]) { //방문하지 않은 곳이라면
-            List.Add(MazeGrid[x + 1].Row[y]);
-        }
-    }
-
-    //현재 블럭의 좌측 블럭 확인
-    if (x - 1 >= 0) {
-        if (CheckList[x - 1].bRow[y]) { //방문하지 않은 곳이라면
-            List.Add(MazeGrid[x - 1].Row[y]);
-        }
-    }
-    return List;
-}

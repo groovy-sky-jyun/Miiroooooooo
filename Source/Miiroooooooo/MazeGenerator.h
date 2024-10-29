@@ -73,10 +73,13 @@ protected:
 	TMap<EDirectionWall, int32> DirectionCountMap;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	AWall* PreviousWall;
+	int WallCount = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TArray<AWall*> Queue;
+	int FirstRemoveCount = 0;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int PopCount = 0;
 
 
 	UFUNCTION()
@@ -92,17 +95,15 @@ protected:
 	void DeleteWall(AWall* OriginWall, AWall* NeighborWall); 
 
 	UFUNCTION()
-	void WallDirectionCount(AWall* OriginWall);
+	FString CheckSequenceDirection();
 
 	UFUNCTION()
-	void BFSMakePassage(int x, int y);
+	void RemoveSequenceList(TArray<AWall*>& List, AWall* Origin);
 
 	UFUNCTION()
-	void CheckUnVisitQueue(int x, int y);
+	void DirectionCounting(AWall* Origin, AWall* Neighbor);
 
 	UFUNCTION()
-	void DeleteRandWall(AWall* RandWall);
-
-	UFUNCTION()
-	TArray<AWall*> CheckVisitQueue(int x, int y, TArray<AWall*>List);
+	void AddDeleteWall(AWall* Origin);
+	
 };
