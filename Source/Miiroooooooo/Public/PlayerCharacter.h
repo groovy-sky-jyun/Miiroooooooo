@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "EnhancedInputComponent.h"
+#include "Inventory.h"
+#include "TreasureChest.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
@@ -37,6 +39,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
 	class UInputAction* LookAroundAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	class UInputAction* PressFAction;
+
+
 
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
@@ -44,12 +50,18 @@ public:
 	UFUNCTION()
 	void LookAround(const FInputActionValue& Value);
 
+	UFUNCTION()
+	void PickUpItem();
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float MaxSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float CurrentPitch;
+
+	UPROPERTY()
+	ATreasureChest* CurrentTreasureChest;
 
 protected:
 

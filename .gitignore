@@ -72,3 +72,9 @@ Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+
+# asset
+Content/KoboDungeon/*
+Content/FirstCabinet/*
+Content/NHC_Potions/*

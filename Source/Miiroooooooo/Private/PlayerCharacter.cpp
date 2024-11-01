@@ -6,6 +6,10 @@
 #include "Components/ArrowComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Inventory.h"
+#include "MiiroooPlayerController.h"
+#include "TreasureChest.h"
+#include "GameFramework/Actor.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 
@@ -18,10 +22,10 @@ APlayerCharacter::APlayerCharacter()
 	
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	//플레이어가 뛸 때 카메라가 같이 흔들려서 실제 뛰는 느낌(몰입감)
-	CameraBoom->SetupAttachment(RootComponent);
-	//CameraBoom->TargetArmLength = 2.0f;
+	CameraBoom->SetupAttachment(GetMesh());
+	CameraBoom->TargetArmLength = 5.0f;
 	CameraBoom->bUsePawnControlRotation = true;
-	CameraBoom->bDoCollisionTest = true;
+	CameraBoom->bDoCollisionTest = false;
 	
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -52,7 +56,7 @@ void APlayerCharacter::BeginPlay()
 
 	CurrentPitch = Controller->GetControlRotation().Pitch;
 
-	GetMesh()->SetOwnerNoSee(true); 
+	//GetMesh()->SetOwnerNoSee(true);
 
 }
 
@@ -74,6 +78,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
 		//LookAround
 		EnhancedInputComponent->BindAction(LookAroundAction, ETriggerEvent::Triggered, this, &APlayerCharacter::LookAround);
+
+		EnhancedInputComponent->BindAction(PressFAction, ETriggerEvent::Triggered, this, &APlayerCharacter::PickUpItem);
 	}
 }
 
@@ -103,5 +109,22 @@ void APlayerCharacter::LookAround(const FInputActionValue& Value)
 	
 	float Pitch = LookVector.Y + CurrentPitch;
 	CurrentPitch = FMath::Clamp(Pitch, -45.0f, 45.0f);	
+}
+
+void APlayerCharacter::PickUpItem()
+{
+	if (CurrentTreasureChest && CurrentTreasureChest->IsOverlap) {
+		AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(GetWorld()->GetFirstPlayerController());
+		if (PlayerController) {
+			PlayerController->UpdateInventoryItemImage(LoadObject<UTexture2D>(nullptr, TEXT("/Game/GameContent/Item/T_P_07.T_P_07")));
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("PlayerCharacter: PlayerController is null"))
+		}
+	}
+	else {
+		UE_LOG(LogTemp, Log, TEXT("보물상자와 닿지 않았거나 이미 Pickup한 보물상자 입니다."));
+	}
+	
 }
 
