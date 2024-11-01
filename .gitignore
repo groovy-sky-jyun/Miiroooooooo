@@ -75,6 +75,7 @@ DerivedDataCache/*
 
 
 # asset
-Content/KoboDungeon/*
-Content/FirstCabinet/*
+Content/Kobo_Dungeon/*
+Content/FirstAidCabinet/*
 Content/NHC_Potions/*
+Content/Scene_QuarrySlate/*
