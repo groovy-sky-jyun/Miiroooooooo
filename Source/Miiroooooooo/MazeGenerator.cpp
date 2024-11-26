@@ -116,9 +116,9 @@ void AMazeGenerator::MakePassages(int x, int y)
         RemoveSequenceList(FourWallList, MazeGrid[x].Row[y]);
     }
     
-    for (int i = 0; i < FourWallList.Num(); i++) {
+    /*for (int i = 0; i < FourWallList.Num(); i++) {
         UE_LOG(LogTemp, Warning, TEXT("FourWallList[%d][%d]"), FourWallList[i]->IndexX, FourWallList[i]->IndexY);
-    }
+    }*/
 
     if (FourWallList.Num() > 0) {
         int32 ShuffleNum = FMath::RandRange(0, FourWallList.Num() - 1);
@@ -316,7 +316,7 @@ void AMazeGenerator::AddDeleteWall(AWall* Origin)
     if (List.Num() > 0) {
         int32 ShuffleNum = FMath::RandRange(0, List.Num() - 1);
         DeleteWall(MazeGrid[x].Row[y], List[ShuffleNum]);
-        UE_LOG(LogTemp, Error, TEXT("Add Delete Wall : List Shuffle[%d][%d]"), List[ShuffleNum]->IndexX, List[ShuffleNum]->IndexY);
+        //UE_LOG(LogTemp, Error, TEXT("Add Delete Wall : List Shuffle[%d][%d]"), List[ShuffleNum]->IndexX, List[ShuffleNum]->IndexY);
     }
    
      

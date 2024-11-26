@@ -8,25 +8,23 @@
 void AMiiroooPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (InventoryWidgetClass) {
-		InventoryWidgetInstance = CreateWidget<UInventoryWidget>(this, InventoryWidgetClass);
-		InventoryWidgetInstance->AddToViewport();
-	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("InventoryWidgetClass is not set"))
-	}
-
 	
+	if (InventoryWidgetClass) {
+		InventoryWidgetInstance = CreateWidget<UInventoryWidget>(GetWorld(), InventoryWidgetClass);
+		if (InventoryWidgetInstance) {
+			InventoryWidgetInstance->AddToViewport();
+		}
+	}
 }
 
-void AMiiroooPlayerController::UpdateInventoryItemImage(UTexture2D* NewImage)
+void AMiiroooPlayerController::UpdateInventoryItemImage(int Number, int Count,UTexture2D* Image)
 {
 	if (InventoryWidgetInstance) {
-		InventoryWidgetInstance->SetItemImage(NewImage);
+		InventoryWidgetInstance->SetInventory(Number, Count, Image);
 	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("InventoryWidgetInstance is null"))
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Please Set PlayerController -> InventoryWidget Class"));
 	}
 }
 

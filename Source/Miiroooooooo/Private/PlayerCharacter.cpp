@@ -6,10 +6,11 @@
 #include "Components/ArrowComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Inventory.h"
 #include "MiiroooPlayerController.h"
-#include "TreasureChest.h"
+#include "BasicItem.h"
 #include "GameFramework/Actor.h"
+#include "Components/BoxComponent.h"
+#include "ItemInteractionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 
@@ -36,7 +37,19 @@ APlayerCharacter::APlayerCharacter()
 	MaxSpeed = 500.0f;
 	GetCharacterMovement()->MaxWalkSpeed = MaxSpeed;
 
+	// CollisionBox 설정
+	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
+	CollisionBox->SetupAttachment(RootComponent);
+	CollisionBox->SetBoxExtent(FVector(50.f, 50.f, 50.f));
 
+	// 충돌감지(물리적x)
+	CollisionBox->SetCollisionProfileName(TEXT("Trigger"));
+	CollisionBox->SetGenerateOverlapEvents(true);
+	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapStart);
+	CollisionBox->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapEnd);
+
+	ItemInteractionComponent = CreateDefaultSubobject<UItemInteractionComponent>(TEXT("ItemInteractionComponent"));
+	ItemsComponent = CreateDefaultSubobject<UItemsComponent>(TEXT("ItemsComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -79,7 +92,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		//LookAround
 		EnhancedInputComponent->BindAction(LookAroundAction, ETriggerEvent::Triggered, this, &APlayerCharacter::LookAround);
 
-		EnhancedInputComponent->BindAction(PressFAction, ETriggerEvent::Triggered, this, &APlayerCharacter::PickUpItem);
+		EnhancedInputComponent->BindAction(PressFAction, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
+
+		EnhancedInputComponent->BindAction(UseItemAction, ETriggerEvent::Started, this, &APlayerCharacter::UseItemKey);
 	}
 }
 
@@ -113,18 +128,52 @@ void APlayerCharacter::LookAround(const FInputActionValue& Value)
 
 void APlayerCharacter::PickUpItem()
 {
-	if (CurrentTreasureChest && CurrentTreasureChest->IsOverlap) {
-		AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(GetWorld()->GetFirstPlayerController());
-		if (PlayerController) {
-			PlayerController->UpdateInventoryItemImage(LoadObject<UTexture2D>(nullptr, TEXT("/Game/GameContent/Item/T_P_07.T_P_07")));
-		}
-		else {
-			UE_LOG(LogTemp, Warning, TEXT("PlayerCharacter: PlayerController is null"))
-		}
-	}
-	else {
-		UE_LOG(LogTemp, Log, TEXT("보물상자와 닿지 않았거나 이미 Pickup한 보물상자 입니다."));
-	}
-	
+	ItemInteractionComponent->AddItemToPlayer();
 }
 
+// Overlap 되었을 때 실행
+void APlayerCharacter::OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ABasicItem* BasicItemClass = Cast<ABasicItem>(OtherActor);
+	if (BasicItemClass) {
+		ItemInteractionComponent->AddOverlapItem(OtherActor);
+	}
+}
+
+// Overlap 끝났을 때 실행
+void APlayerCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex)
+{
+	ItemInteractionComponent->RemoveOverlapItem(OtherActor);
+}
+
+void APlayerCharacter::UseItemKey()
+{
+	APlayerController* PC = GetWorld()->GetFirstPlayerController(); 
+	AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(PC);
+	if (PlayerController->IsInputKeyDown(EKeys::One)) {
+		//1번 슬롯 아이템 사용 로직 구현
+		UseItem(1);
+	}
+	else if(PlayerController->IsInputKeyDown(EKeys::Two)) {
+		//2번 슬롯 아이템 사용 로직 구현
+		UseItem(2);
+	}
+	else if (PlayerController->IsInputKeyDown(EKeys::Three)) {
+		//3번 슬롯 아이템 사용 로직 구현
+		UseItem(3);
+	}
+	else if (PlayerController->IsInputKeyDown(EKeys::Four)) {
+		//4번 슬롯 아이템 사용 로직 구현
+		UseItem(4);
+	}
+	else if (PlayerController->IsInputKeyDown(EKeys::Five)) {
+		//5번 슬롯 아이템 사용 로직 구현
+		UseItem(5);
+	}
+}
+
+void APlayerCharacter::UseItem(int32 KeyNum)
+{
+
+}

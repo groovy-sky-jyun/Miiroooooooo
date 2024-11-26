@@ -19,12 +19,11 @@ protected:
     virtual void BeginPlay() override;
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="InventoryWidget")
     TSubclassOf<UInventoryWidget> InventoryWidgetClass;
-
     UInventoryWidget* InventoryWidgetInstance;
 
     UFUNCTION(BlueprintCallable, Category = "HUD")
-    void UpdateInventoryItemImage(UTexture2D* NewImage);
+    void UpdateInventoryItemImage(int Number, int Count, UTexture2D* Image);
 
 };

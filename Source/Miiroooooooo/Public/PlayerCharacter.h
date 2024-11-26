@@ -5,8 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "EnhancedInputComponent.h"
-#include "Inventory.h"
-#include "TreasureChest.h"
+#include "BasicItem.h"
+#include "ItemInteractionComponent.h"
+#include "ItemsComponent.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
@@ -29,7 +30,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-
+	// 캐릭터 움직임
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
 	class UInputMappingContext* InputMappingContext;
 
@@ -39,29 +40,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
 	class UInputAction* LookAroundAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
-	class UInputAction* PressFAction;
-
-
-
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
 
 	UFUNCTION()
 	void LookAround(const FInputActionValue& Value);
 
-	UFUNCTION()
-	void PickUpItem();
 
-
+	// 캐릭터 물리적 요소
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float MaxSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float CurrentPitch;
-
-	UPROPERTY()
-	ATreasureChest* CurrentTreasureChest;
 
 protected:
 
@@ -71,4 +62,38 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera")
 	class UCameraComponent* CameraComponent;
 	
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UBoxComponent* CollisionBox;
+
+	// 아이템 수집
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	class UInputAction* PressFAction;
+
+	// 아이템 사용
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	class UInputAction* UseItemAction;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInteract")
+	class UItemInteractionComponent* ItemInteractionComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInteract")
+	class UItemsComponent* ItemsComponent;
+
+	UFUNCTION()
+	void PickUpItem();
+
+	UFUNCTION(BlueprintCallable, Category = "ItemInteract")
+	void OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintCallable, Category = "ItemInteract")
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex);
+
+	UFUNCTION()
+	void UseItemKey();
+
+	//임시 아이템 구현 로직 (나중에 다른 클래스로 옮기기
+	UFUNCTION()
+	void UseItem(int32 KeyNum);
 };
