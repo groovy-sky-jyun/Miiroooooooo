@@ -9,5 +9,18 @@ public class Miiroooooooo : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+
+		PublicIncludePaths.AddRange(new string[]
+		{
+            "Miiroooooooo/Public/Character",
+            "Miiroooooooo/Public/Component",
+            "Miiroooooooo/Public/Controller",
+            "Miiroooooooo/Public/GameMode",
+            "Miiroooooooo/Public/Interface",
+			"Miiroooooooo/Public/Items",
+            "Miiroooooooo/Public/Maze",
+            "Miiroooooooo/Public/Structure",
+			"Miiroooooooo/Public/Widget"        
+        });
 	}
 }
