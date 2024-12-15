@@ -16,5 +16,4 @@ class MIIROOOOOOOO_API ASprayItem : public ABasicItem
 	
 public:
 	virtual void UseItem() override;
-	virtual FName GetRowName() override;
 };

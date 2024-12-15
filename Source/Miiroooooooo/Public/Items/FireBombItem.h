@@ -15,5 +15,4 @@ class MIIROOOOOOOO_API AFireBombItem : public ABasicItem
 	GENERATED_BODY()
 public:
 	virtual void UseItem() override;
-	virtual FName GetRowName() override;
 };

@@ -44,8 +44,6 @@ APlayerCharacter::APlayerCharacter()
 	// 충돌감지(물리적x)
 	CollisionBox->SetCollisionProfileName(TEXT("Trigger"));
 	CollisionBox->SetGenerateOverlapEvents(true);
-	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapStart);
-	CollisionBox->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapEnd);
 
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
@@ -137,7 +135,7 @@ void APlayerCharacter::LookAround(const FInputActionValue& Value)
 	CurrentPitch = FMath::Clamp(Pitch, -45.0f, 45.0f);	
 }
 
-/*---[아이템 오버랩]---*/
+/*---[아이템 오버랩]---
 // Overlap 되었을 때 실행
 void APlayerCharacter::OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -155,7 +153,7 @@ void APlayerCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 		InventoryComponent->RemoveOverlapItem(BasicItemClass);
 	}
 	
-}//---------------------
+}//---------------------*/
 
 
 /*---[아이템 획득]---*/

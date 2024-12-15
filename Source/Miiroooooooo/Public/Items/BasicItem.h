@@ -5,15 +5,49 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/WidgetComponent.h"
+#include "Engine/DataAsset.h"
 #include "ItemInterface.h"
 #include "BasicItem.generated.h"
 
 UENUM(BlueprintType)
+enum class EItem : uint8
+{
+	Object UMETA(DisplayName = "Object"),
+	Liquid UMETA(DisplayName = "Liquid")
+};
+
+UENUM(BlueprintType)
 enum class EItemType : uint8
 {
-	TreasureChest UMETA(DisplayName="TreasureChest"),
-	Wear UMETA(DisplayName="Wear")
+	TreasureChest UMETA(DisplayName = "TreasureChest"),
+	Wear UMETA(DisplayName = "Wear")
 };
+
+USTRUCT(BlueprintType)
+struct FItemStructure : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	// Inventory Ä­ À§Ä¡ ³ªÅ¸³¿, 0ºÎÅÍ ½ÃÀÛ 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int InventoryIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString Explanation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Count;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EItem ItemType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* Image;
+};
+
 
 UCLASS()
 class MIIROOOOOOOO_API ABasicItem : public AActor, public IItemInterface
@@ -27,6 +61,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void UseItem() override;
 
 public:	
 	// Called every frame
@@ -41,7 +76,7 @@ public:
 	class UStaticMeshComponent* SM_Treasure;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-	UWidgetComponent* ItemWidgetComponent; 
+	class UWidgetComponent* ItemWidgetComponent; 
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInteract")
@@ -50,13 +85,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInteract")
 	EItemType ItemType;
 
+	UFUNCTION(BlueprintCallable)
+	FName GetRowName();
+
+	UFUNCTION(BlueprintCallable)
+	void SetRowName(FName NewName);
+
+	UFUNCTION(BlueprintCallable)
+	EItemType GetItemType();
+
 	UFUNCTION(BlueprintCallable, Category = "ItemInteract")
 	void OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION(BlueprintCallable, Category = "ItemInteract")
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex);
 
-public:
-	virtual void UseItem() override;
-	virtual FName GetRowName() override;
+
+
 };

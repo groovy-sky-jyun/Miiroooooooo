@@ -8,7 +8,4 @@ void ARandomPotionItem::UseItem()
 	UE_LOG(LogTemp, Warning, TEXT("Use Item RandomPotion"));
 }
 
-FName ARandomPotionItem::GetRowName()
-{
-	return "RandomPotion";
-}
+

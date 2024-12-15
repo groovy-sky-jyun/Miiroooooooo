@@ -7,8 +7,3 @@ void AStaminaPotionItem::UseItem()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Use Item StaminaPotion"));
 }
-
-FName AStaminaPotionItem::GetRowName()
-{
-	return "StaminaPotion";
-}

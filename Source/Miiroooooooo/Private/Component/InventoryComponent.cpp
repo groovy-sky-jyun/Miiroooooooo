@@ -98,9 +98,9 @@ void UInventoryComponent::AddChestItem()
 		FItemStructure* ChestItemStructure = ChestList[ShuffleNum]; // Chest 아이템 중 랜덤으로 1개 반환
 		 
 		if (ChestItemStructure) {
-			FName RowName = ChestItemStructure->Name;
-			AddItemList(ChestItemStructure->InventoryIndex, RowName); //해당 아이템 인벤토리에 추가
-			ChestItemStructure->Count--; //ChestItemStructure 해당 아이템 개수 감소
+			//FName RowName = ChestItemStructure->Name;
+			//AddItemList(ChestItemStructure->InventoryIndex, RowName); //해당 아이템 인벤토리에 추가
+			//ChestItemStructure->Count--; //ChestItemStructure 해당 아이템 개수 감소
 		}
 		else {
 			UE_LOG(LogTemp, Warning, TEXT("ChestItemStructure is null"));
@@ -171,9 +171,9 @@ void UInventoryComponent::UseItemClass(ABasicItem* Item, int Index)
 	if (Item ) {
 		FName RowName = Item->GetRowName();
 		if (InventoryList[RowName] > 0 && InventoryList.Contains(RowName)) {
-			Item->UseItem();
+			/*Item->UseItem();
 			UpdateItemList(RowName);
-			ItemWidget->AddItemToInventory(Index, InventoryList[RowName]);
+			ItemWidget->AddItemToInventory(Index, InventoryList[RowName]);*/
 		}
 	}
 	else {

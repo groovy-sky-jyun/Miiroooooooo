@@ -96,17 +96,9 @@ public:
 	void UseItemKey();
 	//---
 	
-	// 아이템 오버랩 
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	class UInventoryComponent* InventoryComponent;
-
-	UFUNCTION(BlueprintCallable, Category = "ItemInteract")
-	void OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION(BlueprintCallable, Category = "ItemInteract")
-	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex);
-	//---
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	class UHealthComponent* HealthComponent;

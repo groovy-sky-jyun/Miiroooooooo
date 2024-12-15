@@ -16,5 +16,4 @@ class MIIROOOOOOOO_API AStaminaPotionItem : public ABasicItem
 
 public:	
 	virtual void UseItem() override;
-	virtual FName GetRowName() override;
 };

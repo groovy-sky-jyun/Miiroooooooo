@@ -24,5 +24,4 @@ class MIIROOOOOOOO_API IItemInterface
 public:
 	virtual void UseItem()=0;
 
-	virtual FName GetRowName() = 0;
 };

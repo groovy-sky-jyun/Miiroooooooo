@@ -49,11 +49,29 @@ void ABasicItem::Tick(float DeltaTime)
 
 }
 
+FName ABasicItem::GetRowName()
+{
+	return RowName;
+}
+
+void ABasicItem::SetRowName(FName NewName)
+{
+	RowName = NewName;
+}
+
+EItemType ABasicItem::GetItemType()
+{
+	return ItemType;
+}
+
 // Overlap 되었을 때 InteractionKeyWidget Visible 실행
 void ABasicItem::OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ItemWidgetComponent->SetVisibility(true);
+	if (OtherActor->IsA<APlayerCharacter>()) {
+		ItemWidgetComponent->SetVisibility(true);
+	}
+	
 }
 
 // Overlap 끝났을 때 InteractionKeyWidget InVisible실행
@@ -62,13 +80,8 @@ void ABasicItem::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* 
 	ItemWidgetComponent->SetVisibility(false);
 }
 
+
+
 void ABasicItem::UseItem()
 {
 }
-
-FName ABasicItem::GetRowName()
-{
-	return RowName;
-}
-
-

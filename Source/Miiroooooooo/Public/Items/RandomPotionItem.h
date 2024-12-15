@@ -16,5 +16,4 @@ class MIIROOOOOOOO_API ARandomPotionItem : public ABasicItem
 	
 public:
 	virtual void UseItem() override;
-	virtual FName GetRowName() override;
 };

@@ -19,7 +19,6 @@ public class Miiroooooooo : ModuleRules
             "Miiroooooooo/Public/Interface",
 			"Miiroooooooo/Public/Items",
             "Miiroooooooo/Public/Maze",
-            "Miiroooooooo/Public/Structure",
 			"Miiroooooooo/Public/Widget"        
         });
 	}
