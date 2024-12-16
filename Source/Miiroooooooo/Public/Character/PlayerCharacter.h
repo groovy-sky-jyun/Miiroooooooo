@@ -76,6 +76,14 @@ public:
 	class UBoxComponent* CollisionBox;
 
 public:
+	UFUNCTION(BlueprintCallable, Category = "ItemInteract")
+	void OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintCallable, Category = "ItemInteract")
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex);
+
+
+
 	// Widget √ ±‚»≠
 	UFUNCTION(BlueprintCallable)
 	void SetWidgetToViewPort();

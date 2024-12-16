@@ -7,3 +7,8 @@ void AAcidBloodItem::UseItem()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Use Item AcidBlood"));
 }
+
+void AAcidBloodItem::SetRowName()
+{
+	RowName = "AcidBlood";
+}

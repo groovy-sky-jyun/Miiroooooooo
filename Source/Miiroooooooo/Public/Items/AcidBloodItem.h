@@ -16,4 +16,5 @@ class MIIROOOOOOOO_API AAcidBloodItem : public ABasicItem
 	
 public:
 	virtual void UseItem() override;
+	virtual void SetRowName() override;
 };

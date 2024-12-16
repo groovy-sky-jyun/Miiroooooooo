@@ -45,6 +45,9 @@ APlayerCharacter::APlayerCharacter()
 	CollisionBox->SetCollisionProfileName(TEXT("Trigger"));
 	CollisionBox->SetGenerateOverlapEvents(true);
 
+	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapStart);
+	CollisionBox->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapEnd);
+
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
@@ -135,53 +138,55 @@ void APlayerCharacter::LookAround(const FInputActionValue& Value)
 	CurrentPitch = FMath::Clamp(Pitch, -45.0f, 45.0f);	
 }
 
-/*---[æ∆¿Ã≈€ ø¿πˆ∑¶]---
+//---[æ∆¿Ã≈€ ø¿πˆ∑¶]---
 // Overlap µ«æ˙¿ª ∂ß Ω««‡
 void APlayerCharacter::OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ABasicItem* BasicItemClass = Cast<ABasicItem>(OtherActor);
 	if (BasicItemClass) {
+		BasicItemClass->SetInteractWidget(true);
 		InventoryComponent->AddOverlapItem(BasicItemClass);
-	}
+	}	
 }
 // Overlap ≥°≥µ¿ª ∂ß Ω««‡
 void APlayerCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex)
 {
 	ABasicItem* BasicItemClass = Cast<ABasicItem>(OtherActor);
 	if (BasicItemClass) {
+		BasicItemClass->SetInteractWidget(false);
 		InventoryComponent->RemoveOverlapItem(BasicItemClass);
 	}
 	
-}//---------------------*/
+}//---------------------
 
 
 /*---[æ∆¿Ã≈€ »πµÊ]---*/
 void APlayerCharacter::PickUpItem()
 {
-	InventoryComponent->AddItemToInventory();
+	InventoryComponent->AddToInventory();
 }//---------------------
 
 
-/*---[æ∆¿Ã≈€ ªÁøÎ]---*/
+//---[æ∆¿Ã≈€ ªÁøÎ]---
 void APlayerCharacter::UseItemKey()
 {
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(PC);
+	//APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	//AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(PC);
 
-	if (PlayerController->IsInputKeyDown(EKeys::One)) { //1π¯ ΩΩ∑‘
-		InventoryComponent->PressUseItem(1);
-	}
-	else if (PlayerController->IsInputKeyDown(EKeys::Two)) { //2π¯ ΩΩ∑‘
-		InventoryComponent->PressUseItem(2);
-	}
-	else if (PlayerController->IsInputKeyDown(EKeys::Three)) { //3π¯ ΩΩ∑‘
-		InventoryComponent->PressUseItem(3);
-	}
-	else if (PlayerController->IsInputKeyDown(EKeys::Four)) { //4π¯ ΩΩ∑‘
-		InventoryComponent->PressUseItem(4);
-	}
-	else if (PlayerController->IsInputKeyDown(EKeys::Five)) { //5π¯ ΩΩ∑‘
-		InventoryComponent->PressUseItem(5);
-	}
+	//if (PlayerController->IsInputKeyDown(EKeys::One)) { //1π¯ ΩΩ∑‘
+	//	InventoryComponent->PressUseItem(1);
+	//}
+	//else if (PlayerController->IsInputKeyDown(EKeys::Two)) { //2π¯ ΩΩ∑‘
+	//	InventoryComponent->PressUseItem(2);
+	//}
+	//else if (PlayerController->IsInputKeyDown(EKeys::Three)) { //3π¯ ΩΩ∑‘
+	//	InventoryComponent->PressUseItem(3);
+	//}
+	//else if (PlayerController->IsInputKeyDown(EKeys::Four)) { //4π¯ ΩΩ∑‘
+	//	InventoryComponent->PressUseItem(4);
+	//}
+	//else if (PlayerController->IsInputKeyDown(EKeys::Five)) { //5π¯ ΩΩ∑‘
+	//	InventoryComponent->PressUseItem(5);
+	//}
 }//---------------------

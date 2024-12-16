@@ -6,7 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/DataAsset.h"
-#include "ItemInterface.h"
 #include "BasicItem.generated.h"
 
 UENUM(BlueprintType)
@@ -30,7 +29,7 @@ struct FItemStructure : public FTableRowBase
 
 	// Inventory Ä­ À§Ä¡ ³ªÅ¸³¿, 0ºÎÅÍ ½ÃÀÛ 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int InventoryIndex;
+	int Index;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Name;
@@ -50,7 +49,7 @@ struct FItemStructure : public FTableRowBase
 
 
 UCLASS()
-class MIIROOOOOOOO_API ABasicItem : public AActor, public IItemInterface
+class MIIROOOOOOOO_API ABasicItem : public AActor
 {
 	GENERATED_BODY()
 	
@@ -61,7 +60,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	virtual void UseItem() override;
 
 public:	
 	// Called every frame
@@ -78,6 +76,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	class UWidgetComponent* ItemWidgetComponent; 
 
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInteract")
 	FName RowName;
@@ -89,17 +88,12 @@ public:
 	FName GetRowName();
 
 	UFUNCTION(BlueprintCallable)
-	void SetRowName(FName NewName);
-
-	UFUNCTION(BlueprintCallable)
 	EItemType GetItemType();
 
-	UFUNCTION(BlueprintCallable, Category = "ItemInteract")
-	void OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION(BlueprintCallable)
+	void SetInteractWidget(bool value);
 
-	UFUNCTION(BlueprintCallable, Category = "ItemInteract")
-	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex);
-
-
-
+public:
+	virtual void UseItem();
+	virtual void SetRowName();
 };

@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "BasicItem.h"
 #include "InventoryWidget.h"
 #include "InventoryComponent.generated.h"
 
+class BasicItem;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
 class MIIROOOOOOOO_API UInventoryComponent : public UActorComponent
@@ -26,24 +26,24 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+private:
 	//Item Overlap 包访---
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InventoryList")
-	TArray<ABasicItem*> OverlapItemList;
+	UPROPERTY(VisibleAnywhere, Category = "InventoryItems")
+	TArray<ABasicItem*> OverlapItems;
 
+	//Item Add 包访---
+	UPROPERTY(VisibleAnywhere, Category = "InventoryItems")
+	TMap<int, int> InventoryItems;
+
+public:
 	UFUNCTION(BlueprintCallable)
 	void AddOverlapItem(ABasicItem* ItemClass);
 
 	UFUNCTION(BlueprintCallable)
 	void RemoveOverlapItem(ABasicItem* ItemClass);
 	//----------------
-	
-	//Item Add 包访---
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InventoryList")
-	TMap<FName, int> InventoryList;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InventoryList")
-	TArray<FItemStructure> ChestStructureList;
-
+public: 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UInventoryWidget* ItemWidget;
 
@@ -51,25 +51,20 @@ public:
 	UDataTable* ItemTable; 
 
 	UFUNCTION(BlueprintCallable)
-	void GetStructuresForType(EItem ItemType);
+	void AddToInventory();
+
+private:
+	UFUNCTION(BlueprintCallable)
+	void AddItem(FItemStructure ItemStructure);
 
 	UFUNCTION(BlueprintCallable)
-	void AddItemToInventory();
+	FItemStructure GetRnadItem(EItem ItemType);
 
 	UFUNCTION(BlueprintCallable)
 	ABasicItem* CloseToPlayer();
-
-	UFUNCTION(BlueprintCallable)
-	void AddChestItem();
-
-	UFUNCTION(BlueprintCallable)
-	void AddWearItem(ABasicItem* WearItem);
-
-	UFUNCTION(BlueprintCallable)
-	void AddItemList(int InventoryIndex, FName RowName);
 	//----------------
 	
-	//Item Use 包访---
+	/*Item Use 包访---
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ItemClass")
 	ABasicItem* StaminaClass;
 
@@ -93,7 +88,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateItemList(FName RowName);
-	//----------------
+	----------------*/
 	
 
 	

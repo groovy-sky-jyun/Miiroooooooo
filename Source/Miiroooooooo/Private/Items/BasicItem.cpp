@@ -27,8 +27,6 @@ ABasicItem::ABasicItem()
 	// 충돌감지(물리적x)
 	CollisionBox->SetCollisionProfileName(TEXT("Trigger"));
 	CollisionBox->SetGenerateOverlapEvents(true);
-	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ABasicItem::OnOverlapStart);
-	CollisionBox->OnComponentEndOverlap.AddDynamic(this, &ABasicItem::OnOverlapEnd);
 
 	// Widget Interaction
 	ItemWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
@@ -54,34 +52,22 @@ FName ABasicItem::GetRowName()
 	return RowName;
 }
 
-void ABasicItem::SetRowName(FName NewName)
-{
-	RowName = NewName;
-}
-
 EItemType ABasicItem::GetItemType()
 {
 	return ItemType;
 }
 
-// Overlap 되었을 때 InteractionKeyWidget Visible 실행
-void ABasicItem::OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ABasicItem::SetInteractWidget(bool value)
 {
-	if (OtherActor->IsA<APlayerCharacter>()) {
-		ItemWidgetComponent->SetVisibility(true);
-	}
-	
+	ItemWidgetComponent->SetVisibility(value);
 }
-
-// Overlap 끝났을 때 InteractionKeyWidget InVisible실행
-void ABasicItem::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex)
-{
-	ItemWidgetComponent->SetVisibility(false);
-}
-
-
 
 void ABasicItem::UseItem()
 {
+	UE_LOG(LogTemp, Warning, TEXT("BasicItem : UseItem() : Check ItemClass"));
+}
+
+void ABasicItem::SetRowName()
+{
+	UE_LOG(LogTemp, Warning, TEXT("BasicItem : SetRowName() : Check ItemClass"));
 }
