@@ -5,17 +5,13 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 
-void UStaminaBarWidget::SetHealthBar(float CurrentHealth, float MaxHealth)
+void UStaminaBarWidget::SetHealthBar(float Value)
 {
-	float Health = CurrentHealth / MaxHealth;
-	if (HealthBar) {
-		HealthBar->SetPercent(Health);
-		SetHealthLabel(Health);
-	}
+	HealthBar->SetPercent(Value);
 }
 
-void UStaminaBarWidget::SetHealthLabel(float Health)
+void UStaminaBarWidget::SetHealthLabel(float Value)
 {
-	FText HealthLabel = FText::AsNumber((int)Health);
+	FText HealthLabel = FText::AsNumber((int)Value);
 	CurrentHealthLabel->SetText(HealthLabel);
 }

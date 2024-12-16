@@ -6,12 +6,14 @@
 #include "Components/Image.h"
 #include "Engine/Texture2D.h"
 #include "Components/HorizontalBox.h"
+#include "Components/ProgressBar.h"
 #include "Engine/Engine.h"
 
 //À§Á¬ ÃÊ±âÈ­
 void UInventoryWidget::NativeConstruct() {
 	CastHorizontalChild();
 	SetInVisibleWidgets();
+	UpdateStamina(1.0f);
 }
 
 void UInventoryWidget::CastHorizontalChild()
@@ -54,6 +56,14 @@ void UInventoryWidget::AddItemToInventory(int Index, int Count)
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("LiquidWidgets Is Not ValidIndex : %d"), Index);
+	}
+}
+
+void UInventoryWidget::UpdateStamina(float Value)
+{
+	if (StaminaBar) {
+		StaminaBar->SetHealthBar(Value);
+		StaminaBar->SetHealthLabel(Value*100);
 	}
 }
 

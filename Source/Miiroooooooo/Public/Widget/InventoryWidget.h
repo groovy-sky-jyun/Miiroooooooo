@@ -7,6 +7,7 @@
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
 #include "InventorySquareWidget.h"
+#include "StaminaBarWidget.h"
 #include "InventoryWidget.generated.h"
 
 /**
@@ -53,4 +54,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddItemToInventory(int Index, int Count);
 
+
+	UPROPERTY(meta = (BindWidget))
+	class UStaminaBarWidget* StaminaBar;
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateStamina(float Value);
 };

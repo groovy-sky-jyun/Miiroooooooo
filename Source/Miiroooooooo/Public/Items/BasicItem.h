@@ -76,6 +76,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	class UWidgetComponent* ItemWidgetComponent; 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Heal")
+	class UHealthComponent* HealthInstance;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemInteract")
@@ -95,5 +97,4 @@ public:
 
 public:
 	virtual void UseItem();
-	virtual void SetRowName();
 };

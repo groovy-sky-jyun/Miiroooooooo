@@ -7,6 +7,8 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
+#include "Kismet/GameplayStatics.h"
+#include "PlayerCharacter.h"
 
 
 // Sets default values
@@ -34,11 +36,22 @@ ABasicItem::ABasicItem()
 	ItemWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	ItemWidgetComponent->SetDrawSize(FVector2D(80.0f, 80.0f));
 	ItemWidgetComponent->SetVisibility(false); 
+
+	
 }
 
 void ABasicItem::BeginPlay()
 {
 	Super::BeginPlay();
+
+	APlayerCharacter* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (Player) {
+		HealthInstance = Player->HealthComponent;
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("BasicItem : Player is null"));
+	}
+	
 }
 
 void ABasicItem::Tick(float DeltaTime)
@@ -65,9 +78,4 @@ void ABasicItem::SetInteractWidget(bool value)
 void ABasicItem::UseItem()
 {
 	UE_LOG(LogTemp, Warning, TEXT("BasicItem : UseItem() : Check ItemClass"));
-}
-
-void ABasicItem::SetRowName()
-{
-	UE_LOG(LogTemp, Warning, TEXT("BasicItem : SetRowName() : Check ItemClass"));
 }

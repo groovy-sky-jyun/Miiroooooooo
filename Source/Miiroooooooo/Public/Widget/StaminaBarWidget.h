@@ -21,14 +21,11 @@ public:
 	UPROPERTY(meta=(BindWidget))
 	class UTextBlock* CurrentHealthLabel;
 
-	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* MaxHealthLabel;
+	UFUNCTION(BlueprintCallable)
+	void SetHealthBar(float Value);
 
 	UFUNCTION(BlueprintCallable)
-	void SetHealthBar(float CurrentHealth, float MaxHealth);
-
-	UFUNCTION(BlueprintCallable)
-	void SetHealthLabel(float Health); 
+	void SetHealthLabel(float Value);
 
 
 

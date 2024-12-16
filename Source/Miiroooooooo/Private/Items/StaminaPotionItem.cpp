@@ -3,7 +3,9 @@
 
 #include "StaminaPotionItem.h"
 
+
 void AStaminaPotionItem::UseItem()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Use Item StaminaPotion"));
+	if(HealthInstance)
+		HealthInstance->AddStamina(HealValue);
 }

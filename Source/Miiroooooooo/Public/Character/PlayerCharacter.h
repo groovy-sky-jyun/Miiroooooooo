@@ -54,6 +54,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float CurrentPitch;
 
+	UFUNCTION(BlueprintCallable)
+	void SetSpeed(float Value);
+
+	UFUNCTION(BlueprintCallable)
+	void SetOriginSpeed();
+
+	UFUNCTION(BlueprintCallable)
+	void ReverseKey();
+
+	UFUNCTION(BlueprintCallable)
+	void ReverseOriginKey();
+
+	UPROPERTY()
+	bool bIsReverse;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera")
@@ -111,6 +126,4 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	class UHealthComponent* HealthComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool bIsUseReverseKey;
 };

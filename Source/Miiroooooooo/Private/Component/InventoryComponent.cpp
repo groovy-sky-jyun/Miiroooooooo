@@ -7,9 +7,9 @@
 #include "GameFramework/Character.h"
 #include "StaminaPotionItem.h"
 #include "RandomPotionItem.h"
-#include "SprayItem.h"
 #include "FireBombItem.h"
 #include "AcidBloodItem.h"
+#include "SprayItem.h"
 
 
 UInventoryComponent::UInventoryComponent()
@@ -17,10 +17,15 @@ UInventoryComponent::UInventoryComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-/*---[초기화]---*/
 void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	StaminaClass = GetWorld()->SpawnActor<AStaminaPotionItem>(AStaminaPotionItem::StaticClass());
+	RandomClass = GetWorld()->SpawnActor<ARandomPotionItem>(ARandomPotionItem::StaticClass());
+	FireBombClass = GetWorld()->SpawnActor<AFireBombItem>(AFireBombItem::StaticClass());
+	AcidBloodClass = GetWorld()->SpawnActor<AAcidBloodItem>(AAcidBloodItem::StaticClass());
+	SprayClass = GetWorld()->SpawnActor<ASprayItem>(ASprayItem::StaticClass());
 
 	//PlayerCharacter의 PlayerWidget 초기화 및 가져오기
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetOwner());
@@ -30,12 +35,13 @@ void UInventoryComponent::BeginPlay()
 			ItemWidget = PlayerCharacter->PlayerWidget;
 	}
 }
+
 void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-/*---[아이템 획득]---*/
+/*---[Add Item]---*/
 void UInventoryComponent::AddToInventory()
 {
 	ABasicItem* ItemClass = CloseToPlayer();
@@ -54,23 +60,22 @@ void UInventoryComponent::AddToInventory()
 		FItemStructure* ItemStructure = ItemTable->FindRow<FItemStructure>(RowName, TEXT("RowName"));
 		AddItem(*ItemStructure);
 	}
-	
 }
-
 void UInventoryComponent::AddItem(FItemStructure ItemStructure)
 {
 	int Index = ItemStructure.Index;
+
 	if (!InventoryItems.Contains(Index)) {
 		InventoryItems.Add(Index, 1);
+		CurrentItems.Add(Index, 1);
 		ItemWidget->AddItemToInventory(Index, 1);
 	}
 	else if (InventoryItems[Index] < ItemStructure.Count) {
 		InventoryItems[Index]++;
-		ItemWidget->AddItemToInventory(Index, InventoryItems[Index]);
+		CurrentItems[Index]++;
+		ItemWidget->AddItemToInventory(Index, CurrentItems[Index]);
 	}
 }
-
-//오버랩 된 아이템들 중 플레이어와 가장 가까이 있는 아이템 클래스 반환
 ABasicItem* UInventoryComponent::CloseToPlayer()
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(this, 0);
@@ -88,7 +93,6 @@ ABasicItem* UInventoryComponent::CloseToPlayer()
 	}
 	return nullptr;
 }
-
 FItemStructure UInventoryComponent::GetRnadItem(EItem ItemType)
 {
 	TArray<FItemStructure*> Items;
@@ -109,64 +113,53 @@ FItemStructure UInventoryComponent::GetRnadItem(EItem ItemType)
 		return FItemStructure();
 	}
 }
+//--------------------------------
 
-/*--- [OverlapItems 관리]---*/
-//플레이어와 아이템 overlap 됐을 때 -> '오버랩 아이템 리스트'에 아이템 추가
+/*---[Use Item]---*/
+void UInventoryComponent::PressUseItem(int KeyNum)
+{
+	int Index = KeyNum - 1;
+	ABasicItem* ItemInstance = nullptr;
+
+	switch (Index) {
+	case 0: {
+		UseItemToInventory(Index, StaminaClass);
+		break;
+	}
+	case 1:
+		UseItemToInventory(Index,RandomClass);
+		break;
+	case 2:
+		UseItemToInventory(Index, FireBombClass);
+		break;
+	case 3:
+		UseItemToInventory(Index, AcidBloodClass);
+		break;
+	case 4:
+		UseItemToInventory(Index, SprayClass);
+		break;
+	}
+}
+void UInventoryComponent::UseItemToInventory(int Index, ABasicItem* ItemClass)
+{
+	if (ItemClass && CurrentItems[Index] > 0) {
+		CurrentItems[Index]--;
+		ItemClass->UseItem();
+		ItemWidget->AddItemToInventory(Index, CurrentItems[Index]);
+	}
+}
+//--------------------------
+
+/*--- [Overlap]---*/
 void UInventoryComponent::AddOverlapItem(ABasicItem* ItemClass)
 {
 	OverlapItems.Add(ItemClass);
 }
-//플레이어와 아이템 overlap 끝났을 때 -> '오버랩 아이템 리스트'에 아이템 삭제
 void UInventoryComponent::RemoveOverlapItem(ABasicItem* ItemClass)
 {
 	OverlapItems.Remove(ItemClass);
-}//--------------------
+}//------------------------------
 
-
-/*---[아이템 사용]---
-void UInventoryComponent::PressUseItem(int KeyNum)
-{
-	switch (KeyNum) {
-	case 1:
-		UseItemClass(StaminaClass, KeyNum -1);
-		break;
-	case 2:
-		UseItemClass(RandomClass, KeyNum - 1);
-		break;
-	case 3:
-		UseItemClass(FireBombClass, KeyNum - 1);
-		break;
-	case 4:
-		UseItemClass(AcidBloodClass, KeyNum - 1);
-		break;
-	case 5:
-		UseItemClass(SprayClass, KeyNum - 1);
-		break;
-	}
-}
-
-// 아이템 클래스 내의 override 함수 사용 (UItemInterface) && update widget
-void UInventoryComponent::UseItemClass(ABasicItem* Item, int Index)
-{
-	if (Item ) {
-		FName RowName = Item->GetRowName();
-		if (InventoryItems[RowName] > 0 && InventoryItems.Contains(RowName)) {
-			/*Item->UseItem();
-			UpdateItemList(RowName);
-			ItemWidget->AddItemToInventory(Index, InventoryItems[RowName]);
-		}
-	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("UseItemClass : ItemClass is null"));
-	}
-}
-// '인벤토리 아이템 리스트'에서 사용한 아이템 개수 줄이기
-void UInventoryComponent::UpdateItemList(FName RowName)
-{
-	if (InventoryItems.Contains(RowName) && InventoryItems[RowName] > 0) { 
-		InventoryItems[RowName]--;
-	}
-}--------------------*/
 
 
 

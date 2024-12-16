@@ -33,8 +33,8 @@ APlayerCharacter::APlayerCharacter()
 	CameraComponent->SetupAttachment(CameraBoom);
 	CameraComponent->bUsePawnControlRotation = false;
 
-	
-	MaxSpeed = 600.0f;
+	MaxSpeed = 500.0f;
+	bIsReverse = false;
 
 	// CollisionBox ¼³Á¤
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
@@ -66,8 +66,7 @@ void APlayerCharacter::BeginPlay()
 			Subsystem->AddMappingContext(InputMappingContext, 0);
 		}
 	}
-
-	CurrentPitch = Controller->GetControlRotation().Pitch;
+	SetOriginSpeed();
 }
 
 void APlayerCharacter::SetWidgetToViewPort()
@@ -110,7 +109,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	//¹Ý´ë¹æÇâ Å° ¾ÆÀÌÅÛ »ç¿ë
-	if(bIsUseReverseKey) {
+	if(bIsReverse) {
 		MovementVector.X = -MovementVector.X; // ÁÂ¿ì ¹ÝÀü
 		MovementVector.Y = -MovementVector.Y; // »óÇÏ ¹ÝÀü
 	}
@@ -136,6 +135,31 @@ void APlayerCharacter::LookAround(const FInputActionValue& Value)
 	
 	float Pitch = LookVector.Y + CurrentPitch;
 	CurrentPitch = FMath::Clamp(Pitch, -45.0f, 45.0f);	
+}
+
+void APlayerCharacter::SetSpeed(float Value)
+{
+	GetCharacterMovement()->MaxWalkSpeed = Value;
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &APlayerCharacter::SetOriginSpeed, 2, false);
+	
+}
+
+void APlayerCharacter::SetOriginSpeed()
+{
+	GetCharacterMovement()->MaxWalkSpeed = MaxSpeed;
+}
+
+void APlayerCharacter::ReverseKey()
+{
+	bIsReverse = true;
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &APlayerCharacter::ReverseOriginKey, 4, false);
+}
+
+void APlayerCharacter::ReverseOriginKey()
+{
+	bIsReverse = false;
 }
 
 //---[¾ÆÀÌÅÛ ¿À¹ö·¦]---
@@ -171,22 +195,22 @@ void APlayerCharacter::PickUpItem()
 //---[¾ÆÀÌÅÛ »ç¿ë]---
 void APlayerCharacter::UseItemKey()
 {
-	//APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	//AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(PC);
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(PC);
 
-	//if (PlayerController->IsInputKeyDown(EKeys::One)) { //1¹ø ½½·Ô
-	//	InventoryComponent->PressUseItem(1);
-	//}
-	//else if (PlayerController->IsInputKeyDown(EKeys::Two)) { //2¹ø ½½·Ô
-	//	InventoryComponent->PressUseItem(2);
-	//}
-	//else if (PlayerController->IsInputKeyDown(EKeys::Three)) { //3¹ø ½½·Ô
-	//	InventoryComponent->PressUseItem(3);
-	//}
-	//else if (PlayerController->IsInputKeyDown(EKeys::Four)) { //4¹ø ½½·Ô
-	//	InventoryComponent->PressUseItem(4);
-	//}
-	//else if (PlayerController->IsInputKeyDown(EKeys::Five)) { //5¹ø ½½·Ô
-	//	InventoryComponent->PressUseItem(5);
-	//}
+	if (PlayerController->IsInputKeyDown(EKeys::One)) { //1¹ø ½½·Ô
+		InventoryComponent->PressUseItem(1);
+	}
+	else if (PlayerController->IsInputKeyDown(EKeys::Two)) { //2¹ø ½½·Ô
+		InventoryComponent->PressUseItem(2);
+	}
+	else if (PlayerController->IsInputKeyDown(EKeys::Three)) { //3¹ø ½½·Ô
+		InventoryComponent->PressUseItem(3);
+	}
+	else if (PlayerController->IsInputKeyDown(EKeys::Four)) { //4¹ø ½½·Ô
+		InventoryComponent->PressUseItem(4);
+	}
+	else if (PlayerController->IsInputKeyDown(EKeys::Five)) { //5¹ø ½½·Ô
+		InventoryComponent->PressUseItem(5);
+	}
 }//---------------------

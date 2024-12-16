@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "InventoryWidget.h"
 #include "HealthComponent.generated.h"
 
 
@@ -24,9 +25,19 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Health")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UInventoryWidget* ItemWidget;
+
+	UFUNCTION(BlueprintCallable)
+	void AddStamina(float Value);
+
+	UFUNCTION(BlueprintCallable)
+	void SubStamina(float Value);
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = "Health")
 	float CurrentHealth;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float MaxHealth=100;
-		
+
+	UPROPERTY(VisibleAnywhere, Category = "Health")
+	float MaxHealth = 100;
 };

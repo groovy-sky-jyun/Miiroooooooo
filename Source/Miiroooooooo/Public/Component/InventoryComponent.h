@@ -15,25 +15,23 @@ class MIIROOOOOOOO_API UInventoryComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
 	UInventoryComponent();
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
 public:
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	//Item Overlap 包访---
 	UPROPERTY(VisibleAnywhere, Category = "InventoryItems")
 	TArray<ABasicItem*> OverlapItems;
 
-	//Item Add 包访---
 	UPROPERTY(VisibleAnywhere, Category = "InventoryItems")
 	TMap<int, int> InventoryItems;
+
+	UPROPERTY(VisibleAnywhere, Category = "InventoryItems")
+	TMap<int, int> CurrentItems;
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -41,7 +39,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void RemoveOverlapItem(ABasicItem* ItemClass);
-	//----------------
+
 
 public: 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -62,33 +60,32 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 	ABasicItem* CloseToPlayer();
-	//----------------
-	
-	/*Item Use 包访---
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ItemClass")
-	ABasicItem* StaminaClass;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ItemClass")
-	ABasicItem* RandomClass;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ItemClass")
-	ABasicItem* AcidBloodClass;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ItemClass")
-	ABasicItem* FireBombClass;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ItemClass")
-	ABasicItem* SprayClass;
-
+public:
 	UFUNCTION(BlueprintCallable)
 	void PressUseItem(int KeyNum);
 
 	UFUNCTION(BlueprintCallable)
-	void UseItemClass(ABasicItem* Item, int Index);
+	void UseItemToInventory(int Index, ABasicItem* ItemClass);
 
-	UFUNCTION(BlueprintCallable)
-	void UpdateItemList(FName RowName);
-	----------------*/
+private:
+	/*Item Use 包访---*/
+	UPROPERTY()
+	ABasicItem* StaminaClass;
+
+	UPROPERTY()
+	ABasicItem* RandomClass;
+
+	UPROPERTY()
+	ABasicItem* FireBombClass;
+
+	UPROPERTY()
+	ABasicItem* AcidBloodClass;
+
+	UPROPERTY()
+	ABasicItem* SprayClass;
+
+
 	
 
 	
