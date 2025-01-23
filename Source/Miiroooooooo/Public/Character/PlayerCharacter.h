@@ -10,6 +10,7 @@
 #include "HealthComponent.h"
 #include "PlayerCharacter.generated.h"
 
+
 UCLASS()
 class MIIROOOOOOOO_API APlayerCharacter : public ACharacter
 {
@@ -76,6 +77,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera")
 	class UCameraComponent* CameraComponent;
+
 	
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ItemInteract")
@@ -126,4 +128,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	class UHealthComponent* HealthComponent;
 
+public:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Trace")
+	class USceneComponent* WallTrace;
 };

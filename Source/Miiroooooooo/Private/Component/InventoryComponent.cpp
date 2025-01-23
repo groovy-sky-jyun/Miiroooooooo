@@ -142,9 +142,15 @@ void UInventoryComponent::PressUseItem(int KeyNum)
 }
 void UInventoryComponent::UseItemToInventory(int Index, ABasicItem* ItemClass)
 {
+	// 플레이어가 소유하고 있는지 확인
 	if (ItemClass && CurrentItems[Index] > 0) {
+		// 아이템 개수 감소
 		CurrentItems[Index]--;
+
+		// 아이템 사용 효과
 		ItemClass->UseItem();
+
+		// 인벤토리 widget 아이템 개수 감소
 		ItemWidget->AddItemToInventory(Index, CurrentItems[Index]);
 	}
 }

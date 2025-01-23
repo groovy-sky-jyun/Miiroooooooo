@@ -2,6 +2,7 @@
 #include "Wall.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/Actor.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 AWall::AWall()
@@ -28,12 +29,18 @@ AWall::AWall()
 	FrontWall->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 	FrontWall->SetRelativeScale3D(FVector(0.5f, 1.75f, 2.0f));
 
+	FrontCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("FrontCollisionBox"));
+	FrontCollisionBox->SetupAttachment(FrontWall);
+
 	BottomWall = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BottomWall"));
 	BottomWall->SetupAttachment(RootComponent);
 	BottomWall->SetStaticMesh(CubeWall);
 	BottomWall->SetRelativeLocation(FVector(-1 * WidthSize,0.0f,0.0f));
 	BottomWall->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
 	BottomWall->SetRelativeScale3D(FVector(0.5f, 1.75f, 2.0f));
+
+	BottomCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BottomCollisionBox"));
+	BottomCollisionBox->SetupAttachment(BottomWall);
 
 	RightWall = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightWall"));
 	RightWall->SetupAttachment(RootComponent);
@@ -42,12 +49,18 @@ AWall::AWall()
 	RightWall->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 	RightWall->SetRelativeScale3D(FVector(0.5f, 1.75f, 2.0f));
 
+	RightCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightCollisionBox"));
+	RightCollisionBox->SetupAttachment(RightWall);
+
 	LeftWall = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftWall"));
 	LeftWall->SetupAttachment(RootComponent);
 	LeftWall->SetStaticMesh(CubeWall);
 	LeftWall->SetRelativeLocation(FVector( 0.0f, -1 * WidthSize, 0.0f));
 	LeftWall->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
 	LeftWall->SetRelativeScale3D(FVector(0.5f, 1.75f, 2.0f));
+
+	LeftCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftCollisionBox"));
+	LeftCollisionBox->SetupAttachment(LeftWall);
 
 	
 }
@@ -77,24 +90,32 @@ void AWall::DeleteOnceWall(FString WallDirection)
 		// 상단 벽 삭제
 		FrontWall->DestroyComponent();
 		FrontWall = nullptr;
+		FrontCollisionBox->DestroyComponent();
+		FrontCollisionBox = nullptr;
 	}
 	else if (WallDirection == "Bottom" && BottomWall)
 	{
 		// 하단 벽 삭제
 		BottomWall->DestroyComponent();
 		BottomWall = nullptr;
+		BottomCollisionBox->DestroyComponent();
+		BottomCollisionBox = nullptr;
 	}
 	else if (WallDirection == "Right" && RightWall)
 	{
 		// 우측 벽 삭제
 		RightWall->DestroyComponent();
 		RightWall = nullptr;
+		RightCollisionBox->DestroyComponent();
+		RightCollisionBox = nullptr;
 	}
 	else if (WallDirection == "Left" && LeftWall)
 	{
 		// 좌측 벽 삭제
 		LeftWall->DestroyComponent();
 		LeftWall = nullptr;
+		LeftCollisionBox->DestroyComponent();
+		LeftCollisionBox = nullptr;
 	}
 }
 

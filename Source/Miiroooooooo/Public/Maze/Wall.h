@@ -26,6 +26,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall")
 	UStaticMesh* CubeWall;
 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UBoxComponent* FrontCollisionBox;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UBoxComponent* BottomCollisionBox;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UBoxComponent* RightCollisionBox;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UBoxComponent* LeftCollisionBox;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wall")
 	UStaticMeshComponent* StaticMesh;
 

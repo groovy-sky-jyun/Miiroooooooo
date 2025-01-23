@@ -12,6 +12,7 @@
 #include "BasicItem.h"
 #include "InventoryComponent.h"
 #include "MiiroooPlayerController.h"
+#include "CollisionQueryParams.h"
 
 
 // Sets default values
@@ -19,7 +20,8 @@ APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	WallTrace = CreateDefaultSubobject<USceneComponent>(TEXT("Trace"));
+	WallTrace->SetupAttachment(RootComponent);
 	
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	//ÇÃ·¹ÀÌ¾î°¡ ¶Û ¶§ Ä«¸Þ¶ó°¡ °°ÀÌ Èçµé·Á¼­ ½ÇÁ¦ ¶Ù´Â ´À³¦(¸ôÀÔ°¨)
@@ -28,7 +30,6 @@ APlayerCharacter::APlayerCharacter()
 	CameraBoom->bUsePawnControlRotation = true;
 	CameraBoom->bDoCollisionTest = false;
 	
-
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	CameraComponent->SetupAttachment(CameraBoom);
 	CameraComponent->bUsePawnControlRotation = false;
@@ -213,4 +214,5 @@ void APlayerCharacter::UseItemKey()
 	else if (PlayerController->IsInputKeyDown(EKeys::Five)) { //5¹ø ½½·Ô
 		InventoryComponent->PressUseItem(5);
 	}
-}//---------------------
+}
+//---------------------

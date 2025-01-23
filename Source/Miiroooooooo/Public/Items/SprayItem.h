@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "BasicItem.h"
+#include "Components/DecalComponent.h"
+#include "Materials/MaterialInterface.h"
 #include "SprayItem.generated.h"
 
 /**
@@ -16,4 +18,7 @@ class MIIROOOOOOOO_API ASprayItem : public ABasicItem
 	
 public:
 	virtual void UseItem() override;
+
+	UFUNCTION()
+	class AWall* CheckTraceWall();
 };

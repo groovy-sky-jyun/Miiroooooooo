@@ -77,7 +77,7 @@ private:
 	ABasicItem* RandomClass;
 
 	UPROPERTY()
-	ABasicItem* FireBombClass;
+	ABasicItem*  FireBombClass;
 
 	UPROPERTY()
 	ABasicItem* AcidBloodClass;
