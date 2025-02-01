@@ -34,17 +34,17 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
-void UHealthComponent::AddStamina(float Value)
+void UHealthComponent::AddHealth(float Value)
 {
 	float NewValue = Value / MaxHealth;
 	CurrentHealth = FMath::Clamp(CurrentHealth + NewValue, 0.0f,1.0f);
-	ItemWidget->UpdateStamina(CurrentHealth);
+	ItemWidget->UpdateHealth(CurrentHealth);
 }
 
-void UHealthComponent::SubStamina(float Value)
+void UHealthComponent::SubHealth(float Value)
 {
 	float NewValue = Value / MaxHealth;
 	CurrentHealth = FMath::Clamp(CurrentHealth - NewValue, 0.0f, 1.0f);
-	ItemWidget->UpdateStamina(CurrentHealth);
+	ItemWidget->UpdateHealth(CurrentHealth);
 }
 

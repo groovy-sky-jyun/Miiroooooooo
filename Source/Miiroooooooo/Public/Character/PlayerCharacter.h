@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "EnhancedInputComponent.h"
 #include "InventoryComponent.h"
-#include "InventoryWidget.h"
+#include "HUDWidget.h"
 #include "HealthComponent.h"
 #include "PlayerCharacter.generated.h"
 
@@ -80,20 +80,24 @@ protected:
 
 	
 public:
+	// Widget 초기화
+	UFUNCTION(BlueprintCallable)
+	void SetWidgetToViewPort();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ItemInteract")
-	UInventoryWidget* InventoryWidget;
+	UHUDWidget* HUDWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ItemInteract")
-	TSubclassOf<UInventoryWidget> WidgetClass;
+	TSubclassOf<UHUDWidget> WidgetClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ItemInteract")
-	UInventoryWidget* PlayerWidget;
+	UHUDWidget* PlayerWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class UBoxComponent* CollisionBox;
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "ItemInteract")
+	/*UFUNCTION(BlueprintCallable, Category = "ItemInteract")
 	void OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION(BlueprintCallable, Category = "ItemInteract")
@@ -101,9 +105,7 @@ public:
 
 
 
-	// Widget 초기화
-	UFUNCTION(BlueprintCallable)
-	void SetWidgetToViewPort();
+
 
 	// 아이템 수집 --
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
@@ -122,12 +124,15 @@ public:
 	//---
 	
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
-	class UInventoryComponent* InventoryComponent;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	//class UInventoryComponent* InventoryComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
+	class UInteractionItems* ItemsComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	class UHealthComponent* HealthComponent;
-
+	*/
 public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Trace")

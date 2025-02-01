@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "InventoryWidget.h"
+#include "HUDWidget.h"
 #include "HealthComponent.generated.h"
 
 
@@ -26,13 +26,13 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UInventoryWidget* ItemWidget;
+	UHUDWidget* ItemWidget;
 
 	UFUNCTION(BlueprintCallable)
-	void AddStamina(float Value);
+	void AddHealth(float Value);
 
 	UFUNCTION(BlueprintCallable)
-	void SubStamina(float Value);
+	void SubHealth(float Value);
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Health")

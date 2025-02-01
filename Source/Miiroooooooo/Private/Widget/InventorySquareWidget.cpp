@@ -19,3 +19,8 @@ void UInventorySquareWidget::SetCountText(FText NewText)
 		Count->SetText(NewText);
 	}
 }
+
+void UInventorySquareWidget::SetTexture2D(UTexture2D* NewTexture)
+{
+	Image->SetBrushFromTexture(NewTexture, false);
+}

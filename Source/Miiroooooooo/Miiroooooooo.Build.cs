@@ -16,8 +16,9 @@ public class Miiroooooooo : ModuleRules
             "Miiroooooooo/Public/Component",
             "Miiroooooooo/Public/Controller",
             "Miiroooooooo/Public/GameMode",
-            "Miiroooooooo/Public/Interface",
 			"Miiroooooooo/Public/Items",
+            "Miiroooooooo/Public/Items/UsableItems",
+            "Miiroooooooo/Public/Items/EquipmentItems",
             "Miiroooooooo/Public/Maze",
 			"Miiroooooooo/Public/Widget"        
         });

@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "InventoryWidget.h"
+#include "HUDWidget.h"
 #include "InventoryComponent.generated.h"
 
-class BasicItem;
+class UsableItem;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
 class MIIROOOOOOOO_API UInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
-
+	/*
 public:
 	UInventoryComponent();
 
@@ -25,7 +25,7 @@ public:
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "InventoryItems")
-	TArray<ABasicItem*> OverlapItems;
+	TArray<AUsableItem*> OverlapItems;
 
 	UPROPERTY(VisibleAnywhere, Category = "InventoryItems")
 	TMap<int, int> InventoryItems;
@@ -35,58 +35,56 @@ private:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void AddOverlapItem(ABasicItem* ItemClass);
+	void AddOverlapItem(AUsableItem* ItemClass);
 
 	UFUNCTION(BlueprintCallable)
-	void RemoveOverlapItem(ABasicItem* ItemClass);
+	void RemoveOverlapItem(AUsableItem* ItemClass);
 
 
 public: 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UInventoryWidget* ItemWidget;
+	UHUDWidget* ItemWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ItemClass") 
 	UDataTable* ItemTable; 
 
-	UFUNCTION(BlueprintCallable)
-	void AddToInventory();
+	//UFUNCTION(BlueprintCallable)
+	//void AddToInventory();
 
 private:
 	UFUNCTION(BlueprintCallable)
 	void AddItem(FItemStructure ItemStructure);
 
-	UFUNCTION(BlueprintCallable)
-	FItemStructure GetRnadItem(EItem ItemType);
+	//UFUNCTION(BlueprintCallable)
+	//FItemStructure GetRnadItem(EItem ItemType);
 
 	UFUNCTION(BlueprintCallable)
-	ABasicItem* CloseToPlayer();
+	AUsableItem* CloseToPlayer();
 
 public:
 	UFUNCTION(BlueprintCallable)
 	void PressUseItem(int KeyNum);
 
 	UFUNCTION(BlueprintCallable)
-	void UseItemToInventory(int Index, ABasicItem* ItemClass);
+	void UseItemToInventory(int Index, AUsableItem* ItemClass);
 
 private:
-	/*Item Use 관련---*/
+	Item Use 관련
 	UPROPERTY()
-	ABasicItem* StaminaClass;
-
-	UPROPERTY()
-	ABasicItem* RandomClass;
+	AUsableItem* HealthClass;
 
 	UPROPERTY()
-	ABasicItem*  FireBombClass;
+	AUsableItem* RandomClass;
 
 	UPROPERTY()
-	ABasicItem* AcidBloodClass;
+	AUsableItem*  FireBombClass;
 
 	UPROPERTY()
-	ABasicItem* SprayClass;
+	AUsableItem* AcidBloodClass;
+
+	UPROPERTY()
+	AUsableItem* SprayClass;
 
 
-	
-
-	
+	*/
 };

@@ -25,4 +25,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetCountText(FText NewText);
+
+	UFUNCTION(BlueprintCallable)
+	void SetTexture2D(UTexture2D* NewTexture);
 };

@@ -5,13 +5,13 @@
 #include "GameFramework/PlayerController.h"
 #include "PlayerCharacter.h"
 #include "GameFramework/Character.h"
-#include "StaminaPotionItem.h"
+#include "HealthPotionItem.h"
 #include "RandomPotionItem.h"
 #include "FireBombItem.h"
 #include "AcidBloodItem.h"
 #include "SprayItem.h"
 
-
+/*
 UInventoryComponent::UInventoryComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -21,7 +21,7 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	StaminaClass = GetWorld()->SpawnActor<AStaminaPotionItem>(AStaminaPotionItem::StaticClass());
+	HealthClass = GetWorld()->SpawnActor<AHealthPotionItem>(AHealthPotionItem::StaticClass());
 	RandomClass = GetWorld()->SpawnActor<ARandomPotionItem>(ARandomPotionItem::StaticClass());
 	FireBombClass = GetWorld()->SpawnActor<AFireBombItem>(AFireBombItem::StaticClass());
 	AcidBloodClass = GetWorld()->SpawnActor<AAcidBloodItem>(AAcidBloodItem::StaticClass());
@@ -41,13 +41,13 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-/*---[Add Item]---*/
+/*---[Add Item]---
 void UInventoryComponent::AddToInventory()
 {
-	ABasicItem* ItemClass = CloseToPlayer();
-	if (ItemClass && ItemClass->ItemType == EItemType::TreasureChest) {
+	AUsableItem* ItemClass = CloseToPlayer();
+	if (ItemClass && ItemClass->ItemType == EItemType::Usable) {
 		
-		FItemStructure ItemStructure = GetRnadItem(EItem::Liquid);
+		FItemStructure ItemStructure = GetRnadItem(EItem::Equipment);
 		if (&ItemStructure) {
 			AddItem(ItemStructure);
 		}
@@ -68,20 +68,20 @@ void UInventoryComponent::AddItem(FItemStructure ItemStructure)
 	if (!InventoryItems.Contains(Index)) {
 		InventoryItems.Add(Index, 1);
 		CurrentItems.Add(Index, 1);
-		ItemWidget->AddItemToInventory(Index, 1);
+		ItemWidget->UpdateItemToInventory(Index, 1);
 	}
 	else if (InventoryItems[Index] < ItemStructure.Count) {
 		InventoryItems[Index]++;
 		CurrentItems[Index]++;
-		ItemWidget->AddItemToInventory(Index, CurrentItems[Index]);
+		ItemWidget->UpdateItemToInventory(Index, CurrentItems[Index]);
 	}
 }
-ABasicItem* UInventoryComponent::CloseToPlayer()
+AUsableItem* UInventoryComponent::CloseToPlayer()
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(this, 0);
 	if (OverlapItems.Num() > 0) {
 		float Length = Player->GetDistanceTo(OverlapItems[0]);
-		ABasicItem* ItemClass = OverlapItems[0];
+		AUsableItem* ItemClass = OverlapItems[0];
 		for (int i = 1; i < OverlapItems.Num(); i++) {
 			float Distance = Player->GetDistanceTo(OverlapItems[i]);
 			if (Distance < Length) {
@@ -93,6 +93,7 @@ ABasicItem* UInventoryComponent::CloseToPlayer()
 	}
 	return nullptr;
 }
+/*
 FItemStructure UInventoryComponent::GetRnadItem(EItem ItemType)
 {
 	TArray<FItemStructure*> Items;
@@ -115,15 +116,16 @@ FItemStructure UInventoryComponent::GetRnadItem(EItem ItemType)
 }
 //--------------------------------
 
-/*---[Use Item]---*/
+
+//---[Use Item]---
 void UInventoryComponent::PressUseItem(int KeyNum)
 {
 	int Index = KeyNum - 1;
-	ABasicItem* ItemInstance = nullptr;
+	AUsableItem* ItemInstance = nullptr;
 
 	switch (Index) {
 	case 0: {
-		UseItemToInventory(Index, StaminaClass);
+		UseItemToInventory(Index, HealthClass);
 		break;
 	}
 	case 1:
@@ -140,7 +142,7 @@ void UInventoryComponent::PressUseItem(int KeyNum)
 		break;
 	}
 }
-void UInventoryComponent::UseItemToInventory(int Index, ABasicItem* ItemClass)
+void UInventoryComponent::UseItemToInventory(int Index, AUsableItem* ItemClass)
 {
 	// 플레이어가 소유하고 있는지 확인
 	if (ItemClass && CurrentItems[Index] > 0) {
@@ -151,23 +153,18 @@ void UInventoryComponent::UseItemToInventory(int Index, ABasicItem* ItemClass)
 		ItemClass->UseItem();
 
 		// 인벤토리 widget 아이템 개수 감소
-		ItemWidget->AddItemToInventory(Index, CurrentItems[Index]);
+		ItemWidget->UpdateItemToInventory(Index, CurrentItems[Index]);
 	}
 }
 //--------------------------
 
-/*--- [Overlap]---*/
-void UInventoryComponent::AddOverlapItem(ABasicItem* ItemClass)
+//--- [Overlap]---
+void UInventoryComponent::AddOverlapItem(AUsableItem* ItemClass)
 {
 	OverlapItems.Add(ItemClass);
 }
-void UInventoryComponent::RemoveOverlapItem(ABasicItem* ItemClass)
+void UInventoryComponent::RemoveOverlapItem(AUsableItem* ItemClass)
 {
 	OverlapItems.Remove(ItemClass);
 }//------------------------------
-
-
-
-
-
-
+*/

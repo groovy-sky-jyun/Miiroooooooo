@@ -9,10 +9,10 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "BasicItem.h"
-#include "InventoryComponent.h"
+#include "UsableItem.h"
 #include "MiiroooPlayerController.h"
 #include "CollisionQueryParams.h"
+#include "InteractionItems.h"
 
 
 // Sets default values
@@ -46,11 +46,11 @@ APlayerCharacter::APlayerCharacter()
 	CollisionBox->SetCollisionProfileName(TEXT("Trigger"));
 	CollisionBox->SetGenerateOverlapEvents(true);
 
-	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapStart);
-	CollisionBox->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapEnd);
+	//CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapStart);
+	//CollisionBox->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapEnd);
 
-	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
-	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	//ItemsComponent = CreateDefaultSubobject<UInteractionItems>(TEXT("ItemsComponent"));
+	//HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -73,7 +73,7 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::SetWidgetToViewPort()
 {
 	if (WidgetClass) {
-		PlayerWidget = CreateWidget<UInventoryWidget>(GetWorld(), WidgetClass);
+		PlayerWidget = CreateWidget<UHUDWidget>(GetWorld(), WidgetClass);
 		if (PlayerWidget) {
 			PlayerWidget->AddToViewport();
 		}
@@ -99,9 +99,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		//LookAround
 		EnhancedInputComponent->BindAction(LookAroundAction, ETriggerEvent::Triggered, this, &APlayerCharacter::LookAround);
 
-		EnhancedInputComponent->BindAction(PressFAction, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
+		//EnhancedInputComponent->BindAction(PressFAction, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
 
-		EnhancedInputComponent->BindAction(UseItemAction, ETriggerEvent::Started, this, &APlayerCharacter::UseItemKey);
+		//EnhancedInputComponent->BindAction(UseItemAction, ETriggerEvent::Started, this, &APlayerCharacter::UseItemKey);
 	}
 }
 
@@ -162,34 +162,34 @@ void APlayerCharacter::ReverseOriginKey()
 {
 	bIsReverse = false;
 }
-
+/*
 //---[¾ÆÀÌÅÛ ¿À¹ö·¦]---
 // Overlap µÇ¾úÀ» ¶§ ½ÇÇà
 void APlayerCharacter::OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ABasicItem* BasicItemClass = Cast<ABasicItem>(OtherActor);
-	if (BasicItemClass) {
-		BasicItemClass->SetInteractWidget(true);
-		InventoryComponent->AddOverlapItem(BasicItemClass);
+	AUsableItem* UsableItemClass = Cast<AUsableItem>(OtherActor);
+	if (UsableItemClass) {
+		UsableItemClass->SetInteractWidget(true);
+		ItemsComponent->AddOverlapItems(UsableItemClass);
 	}	
 }
 // Overlap ³¡³µÀ» ¶§ ½ÇÇà
 void APlayerCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex)
 {
-	ABasicItem* BasicItemClass = Cast<ABasicItem>(OtherActor);
-	if (BasicItemClass) {
-		BasicItemClass->SetInteractWidget(false);
-		InventoryComponent->RemoveOverlapItem(BasicItemClass);
+	AUsableItem* UsableItemClass = Cast<AUsableItem>(OtherActor);
+	if (UsableItemClass) {
+		UsableItemClass->SetInteractWidget(false);
+		ItemsComponent->RemoveOverlapItems(UsableItemClass);
 	}
 	
 }//---------------------
 
 
-/*---[¾ÆÀÌÅÛ È¹µæ]---*/
+/*---[¾ÆÀÌÅÛ È¹µæ]---
 void APlayerCharacter::PickUpItem()
 {
-	InventoryComponent->AddToInventory();
+	ItemsComponent->PickUpAnItem();
 }//---------------------
 
 
@@ -200,19 +200,20 @@ void APlayerCharacter::UseItemKey()
 	AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(PC);
 
 	if (PlayerController->IsInputKeyDown(EKeys::One)) { //1¹ø ½½·Ô
-		InventoryComponent->PressUseItem(1);
+		//ItemsComponent->PressUseItem(1);
 	}
 	else if (PlayerController->IsInputKeyDown(EKeys::Two)) { //2¹ø ½½·Ô
-		InventoryComponent->PressUseItem(2);
+		//ItemsComponent->PressUseItem(2);
 	}
 	else if (PlayerController->IsInputKeyDown(EKeys::Three)) { //3¹ø ½½·Ô
-		InventoryComponent->PressUseItem(3);
+		//ItemsComponent->PressUseItem(3);
 	}
 	else if (PlayerController->IsInputKeyDown(EKeys::Four)) { //4¹ø ½½·Ô
-		InventoryComponent->PressUseItem(4);
+		//ItemsComponent->PressUseItem(4);
 	}
 	else if (PlayerController->IsInputKeyDown(EKeys::Five)) { //5¹ø ½½·Ô
-		InventoryComponent->PressUseItem(5);
+		//ItemsComponent->PressUseItem(5);
 	}
 }
 //---------------------
+*/
