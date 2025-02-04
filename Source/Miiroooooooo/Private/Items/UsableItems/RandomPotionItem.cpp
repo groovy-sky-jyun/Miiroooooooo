@@ -28,15 +28,6 @@ void ARandomPotionItem::UseItem()
 
 }
 
-void ARandomPotionItem::SetName()
-{
-	ItemName = FName("RandomPotion");
-}
-
-FName ARandomPotionItem::GetName()
-{
-	return ItemName;
-}
 
 void ARandomPotionItem::AddHealth()
 {

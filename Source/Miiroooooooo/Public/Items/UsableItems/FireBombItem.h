@@ -13,10 +13,8 @@ UCLASS()
 class MIIROOOOOOOO_API AFireBombItem : public AUsableItem
 {
 	GENERATED_BODY()
+
 public:
-	virtual void SetName() override;
-
-	virtual FName GetName() override;
-
+	virtual void SetName() override { ItemName = EItemName::FireBomb; };
 	virtual void UseItem() override;
 };

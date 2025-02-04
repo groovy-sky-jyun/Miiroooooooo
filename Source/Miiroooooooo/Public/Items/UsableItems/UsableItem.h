@@ -4,9 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "BaseItem.h"
-#include "Components/WidgetComponent.h"
-#include "Components/BoxComponent.h"
-#include "Components/StaticMeshComponent.h"
 #include "UsableItem.generated.h"
 
 UCLASS()
@@ -26,27 +23,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FName ItemName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UBoxComponent* CollisionBox; 
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UStaticMeshComponent* StaticMeshComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UWidgetComponent* InteractionWidget; 
-
-	UFUNCTION()
-	void SetInteractWidget(bool value);
-
 public:
-	virtual void SetName() {};
-	
-	virtual FName GetName() { return FName(); };
-	
 	virtual void UseItem() {};
 
-	virtual EItemType GetItemType() override;
+	virtual EItemType GetItemType() override { return EItemType::Usable; };
+
+	virtual void SetName() override {};
 };

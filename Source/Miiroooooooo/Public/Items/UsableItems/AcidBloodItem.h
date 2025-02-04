@@ -15,9 +15,6 @@ class MIIROOOOOOOO_API AAcidBloodItem : public AUsableItem
 	GENERATED_BODY()
 	
 public:
-	virtual void SetName() override;
-
-	virtual FName GetName() override;
-
+	virtual void SetName() override { ItemName = EItemName::AcidBlood; };
 	virtual void UseItem() override;
 };

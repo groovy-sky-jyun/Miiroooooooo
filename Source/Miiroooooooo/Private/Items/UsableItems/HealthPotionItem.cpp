@@ -7,13 +7,3 @@
 void AHealthPotionItem::UseItem()
 {
 }
-
-void AHealthPotionItem::SetName()
-{
-	ItemName = FName("HealthPotion");
-}
-
-FName AHealthPotionItem::GetName()
-{
-	return ItemName;
-}

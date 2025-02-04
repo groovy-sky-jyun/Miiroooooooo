@@ -9,13 +9,11 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "UsableItem.h"
 #include "MiiroooPlayerController.h"
 #include "CollisionQueryParams.h"
-#include "InteractionItems.h"
+#include "BaseItem.h"
+#include "ItemComponent.h"
 
-
-// Sets default values
 APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -46,14 +44,15 @@ APlayerCharacter::APlayerCharacter()
 	CollisionBox->SetCollisionProfileName(TEXT("Trigger"));
 	CollisionBox->SetGenerateOverlapEvents(true);
 
-	//CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapStart);
-	//CollisionBox->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapEnd);
+	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapStart);
+	CollisionBox->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapEnd);
 
-	//ItemsComponent = CreateDefaultSubobject<UInteractionItems>(TEXT("ItemsComponent"));
+	
+
 	//HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	
 }
 
-// Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -68,25 +67,28 @@ void APlayerCharacter::BeginPlay()
 		}
 	}
 	SetOriginSpeed();
+
+	SetWidgetToViewPort();
+
+	ItemComponent = NewObject<UItemComponent>();
 }
 
 void APlayerCharacter::SetWidgetToViewPort()
 {
+	// Game Controller에서 실행하는걸로 수정
 	if (WidgetClass) {
-		PlayerWidget = CreateWidget<UHUDWidget>(GetWorld(), WidgetClass);
+		UHUDWidget* PlayerWidget = CreateWidget<UHUDWidget>(GetWorld(), WidgetClass);
 		if (PlayerWidget) {
 			PlayerWidget->AddToViewport();
 		}
 	}
 }
 
-// Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-// Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -99,7 +101,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		//LookAround
 		EnhancedInputComponent->BindAction(LookAroundAction, ETriggerEvent::Triggered, this, &APlayerCharacter::LookAround);
 
-		//EnhancedInputComponent->BindAction(PressFAction, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
+		EnhancedInputComponent->BindAction(PressFAction, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
 
 		//EnhancedInputComponent->BindAction(UseItemAction, ETriggerEvent::Started, this, &APlayerCharacter::UseItemKey);
 	}
@@ -162,38 +164,37 @@ void APlayerCharacter::ReverseOriginKey()
 {
 	bIsReverse = false;
 }
-/*
+
 //---[아이템 오버랩]---
 // Overlap 되었을 때 실행
 void APlayerCharacter::OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	AUsableItem* UsableItemClass = Cast<AUsableItem>(OtherActor);
-	if (UsableItemClass) {
-		UsableItemClass->SetInteractWidget(true);
-		ItemsComponent->AddOverlapItems(UsableItemClass);
-	}	
+	ABaseItem* ItemClass = Cast<ABaseItem>(OtherActor);
+	if (ItemClass) {
+		ItemClass->SetInteractWidget(true);
+		ItemComponent->AddOverlapItem(ItemClass);
+	}
 }
 // Overlap 끝났을 때 실행
 void APlayerCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex)
 {
-	AUsableItem* UsableItemClass = Cast<AUsableItem>(OtherActor);
-	if (UsableItemClass) {
-		UsableItemClass->SetInteractWidget(false);
-		ItemsComponent->RemoveOverlapItems(UsableItemClass);
+	ABaseItem* ItemClass = Cast<ABaseItem>(OtherActor);
+	if (ItemClass) {
+		ItemClass->SetInteractWidget(false);
+		ItemComponent->RemoveOverlapItem(ItemClass);
 	}
-	
 }//---------------------
 
 
-/*---[아이템 획득]---
+//---[아이템 획득]---
 void APlayerCharacter::PickUpItem()
 {
-	ItemsComponent->PickUpAnItem();
+	ItemComponent->PickUpAnItem();
 }//---------------------
 
 
-//---[아이템 사용]---
+/*---[아이템 사용]---
 void APlayerCharacter::UseItemKey()
 {
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();

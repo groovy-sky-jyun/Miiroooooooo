@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "MiirooooGameInstance.h"
+#include "ItemStructure.h"
+#include "Components/WidgetComponent.h"
+#include "Components/BoxComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "BaseItem.generated.h"
 
 UCLASS()
@@ -24,9 +27,29 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UBoxComponent* CollisionBox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* StaticMeshComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom_Reference")
+	UWidgetComponent* InteractionWidget;
+	
 	UFUNCTION()
-	virtual EItemType GetItemType() { return EItemType(); };
+	void SetInteractWidget(bool value);
+
 
 	UPROPERTY()
 	EItemType ItemType = EItemType::Equipment;
+
+	UFUNCTION()
+	virtual EItemType GetItemType() { return EItemType(); };
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EItemName ItemName;
+
+	virtual void SetName() {};
+
+	virtual EItemName GetName() { return ItemName; };
 };

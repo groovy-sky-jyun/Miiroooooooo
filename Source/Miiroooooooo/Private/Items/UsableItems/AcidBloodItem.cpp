@@ -8,13 +8,3 @@ void AAcidBloodItem::UseItem()
 	UE_LOG(LogTemp, Warning, TEXT("Use Item AcidBlood"));
 }
 
-void AAcidBloodItem::SetName()
-{
-	ItemName = FName("AcidBlood");
-}
-
-FName AAcidBloodItem::GetName()
-{
-	return ItemName;
-}
-

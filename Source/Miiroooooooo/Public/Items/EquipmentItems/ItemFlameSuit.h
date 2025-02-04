@@ -15,9 +15,7 @@ class MIIROOOOOOOO_API AItemFlameSuit : public AEquipmentItems
 	GENERATED_BODY()
 	
 public:
-	virtual void SetName() override;
-
-	virtual FName GetName() override;
+	virtual void SetName() override { ItemName = EItemName::FlameSuit; };
 
 	virtual void EffectOnProssession() override;
 };

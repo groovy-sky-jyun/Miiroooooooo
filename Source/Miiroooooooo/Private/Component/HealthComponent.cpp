@@ -17,12 +17,12 @@ UHealthComponent::UHealthComponent()
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	/*
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetOwner());
 	if (PlayerCharacter) {
 		if (PlayerCharacter->PlayerWidget)
 			ItemWidget = PlayerCharacter->PlayerWidget;
-	}
+	}*/
 }
 
 

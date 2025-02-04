@@ -4,50 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "Engine/DataTable.h"
 #include "MiirooooGameInstance.generated.h"
 
-UENUM(BlueprintType)
-enum class EItemName : uint8
-{
-	HealthPotion,
-	RandomPotion,
-	Water,
-	FireBomb,
-	ChainSaw,
-	FlameSuit
-};
-
-UENUM(BlueprintType)
-enum class EItemType : uint8
-{
-	Equipment,
-	Usable
-};
-
-USTRUCT(BlueprintType)
-struct FItemInformation : public FTableRowBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EItemName ItemName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString ko_ItemName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString Explanation;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* Texture;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Probability;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EItemType ItemType;
-};
+class AUsableItem;
 
 UCLASS()
 class MIIROOOOOOOO_API UMiirooooGameInstance : public UGameInstance
@@ -62,11 +21,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="CustomReference")
 	UDataTable* ItemData;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CustomReference")
+	UDataTable* ItemClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CustomReference")
+	UUserWidget* HUDWidgetComponent;
+
 	UFUNCTION()
 	UTexture2D* GetItemTexture(FName ItemName);
 
 	UFUNCTION()
-	void SetUsableItemTotal();
+	void SetUsableItemFromData();
 
 	UFUNCTION()
 	int32 GetUsableItemTotal();
@@ -80,6 +45,12 @@ public:
 
 	UFUNCTION()
 	bool HasItemInInventory(FName ItemName);
+
+	UFUNCTION()
+	AUsableItem* GetRandomItem();
+
+	UFUNCTION()
+	EItemName GetProbabilisticItem();
 
 public:
 	UFUNCTION()
@@ -103,4 +74,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	int32 UsableItemTotal;
+
+	UPROPERTY(VisibleAnywhere)
+	TMap<EItemName,float> UsableItemProbabilistic;
+
+	UPROPERTY(VisibleAnywhere)
+	float ProbabilitySum;
 };

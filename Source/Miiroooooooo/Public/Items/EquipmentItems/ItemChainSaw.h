@@ -15,9 +15,7 @@ class MIIROOOOOOOO_API AItemChainSaw : public AEquipmentItems
 	GENERATED_BODY()
 
 public:
-	virtual void SetName() override;
-
-	virtual FName GetName() override;
+	virtual void SetName() override { ItemName = EItemName::ChainSaw; };
 	
 	virtual void EffectOnProssession() override;
 };

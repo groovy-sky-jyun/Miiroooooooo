@@ -17,9 +17,7 @@ class MIIROOOOOOOO_API AHealthPotionItem : public AUsableItem
 	GENERATED_BODY()
 
 public:
-	virtual void SetName() override;
-
-	virtual FName GetName() override;
+	virtual void SetName() override { ItemName = EItemName::HealthPotion; };
 
 	virtual void UseItem() override;
 

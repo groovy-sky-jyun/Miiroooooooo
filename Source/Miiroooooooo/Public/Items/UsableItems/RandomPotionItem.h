@@ -16,9 +16,7 @@ class MIIROOOOOOOO_API ARandomPotionItem : public AUsableItem
 	GENERATED_BODY()
 	
 public:
-	virtual void SetName() override;
-
-	virtual FName GetName() override;
+	virtual void SetName() override { ItemName = EItemName::RandomPotion; };
 
 	virtual void UseItem() override;
 

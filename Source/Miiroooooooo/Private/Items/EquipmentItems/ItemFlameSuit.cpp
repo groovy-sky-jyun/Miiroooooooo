@@ -3,16 +3,6 @@
 
 #include "ItemFlameSuit.h"
 
-void AItemFlameSuit::SetName()
-{
-	ItemName = FName("FlameSuit");
-}
-
-FName AItemFlameSuit::GetName()
-{
-	return ItemName;
-}
-
 void AItemFlameSuit::EffectOnProssession()
 {
 }

@@ -5,9 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "EnhancedInputComponent.h"
-#include "InventoryComponent.h"
 #include "HUDWidget.h"
-#include "HealthComponent.h"
+#include "ItemComponent.h"
 #include "PlayerCharacter.generated.h"
 
 
@@ -35,7 +34,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
 	class UInputMappingContext* InputMappingContext;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="input")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
 	class UInputAction* MovementAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
@@ -84,28 +83,27 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetWidgetToViewPort();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ItemInteract")
-	UHUDWidget* HUDWidget;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Custom_Reference")
+	//UHUDWidget* HUDWidget;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ItemInteract")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Custom_Reference")
 	TSubclassOf<UHUDWidget> WidgetClass;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ItemInteract")
-	UHUDWidget* PlayerWidget;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom_Reference")
+	//UHUDWidget* PlayerWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class UBoxComponent* CollisionBox;
 
 public:
-	/*UFUNCTION(BlueprintCallable, Category = "ItemInteract")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Custom_Reference")
+	UItemComponent* ItemComponent;
+
+	UFUNCTION(BlueprintCallable)
 	void OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION(BlueprintCallable, Category = "ItemInteract")
+	UFUNCTION(BlueprintCallable)
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex);
-
-
-
-
 
 	// 아이템 수집 --
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
@@ -115,6 +113,9 @@ public:
 	void PickUpItem();
 	//---
 
+
+
+	/*
 	// 아이템 사용 --
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	class UInputAction* UseItemAction;

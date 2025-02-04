@@ -12,16 +12,6 @@ void ASprayItem::UseItem()
 	CheckTraceWall();
 }
 
-void ASprayItem::SetName()
-{
-	ItemName = FName("Spray");
-}
-
-FName ASprayItem::GetName()
-{
-	return ItemName;
-}
-
 AWall* ASprayItem::CheckTraceWall()
 {
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
