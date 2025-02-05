@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "EnhancedInputComponent.h"
 #include "HUDWidget.h"
-#include "ItemComponent.h"
+#include "InteractionItemComponent.h"
 #include "PlayerCharacter.generated.h"
 
 
@@ -89,15 +89,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Custom_Reference")
 	TSubclassOf<UHUDWidget> WidgetClass;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom_Reference")
-	//UHUDWidget* PlayerWidget;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UHUDWidget* PlayerWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class UBoxComponent* CollisionBox;
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Custom_Reference")
-	UItemComponent* ItemComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	AInteractionItemComponent* ItemComponent;
 
 	UFUNCTION(BlueprintCallable)
 	void OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

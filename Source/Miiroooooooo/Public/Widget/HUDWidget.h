@@ -16,9 +16,7 @@ class MIIROOOOOOOO_API UHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-private:
-	UPROPERTY(VisibleAnywhere)
-	int32 UsableItemCellNum = 5;
+
 
 public:
 	UPROPERTY(meta=(BindWidget))
@@ -54,31 +52,38 @@ public:
 	UPROPERTY()
 	TArray<UInventorySquareWidget*> CellWidgets;
 
-	UPROPERTY()
-	TArray<FName> UsableItems;
-
-	UPROPERTY()
-	TArray<bool> IndexInUsed;
-
 	UFUNCTION(BlueprintCallable)
-	void UpdateItemToInventory(int Index, int Count);
+	void UpdateUsableItemCount(FName ItemName, int Count);
 
 	UFUNCTION()
-	void AddUsableItem(FName ItemName, int32 Count);
+	void AddUsableItem(FName ItemName, UTexture2D* Texture);
 
 	UFUNCTION()
-	void UseUsableItem(FName ItemName, int32 Count);
+	void AddEquipmentItem(FName ItemName, UTexture2D* Texture);
 
-	UFUNCTION()
-	int32 FindUnUsedIndex();
 
-	UFUNCTION()
-	UTexture2D* SetInventoryTexture(FName ItemName);
 
 public:
 	UPROPERTY(meta = (BindWidget))
 	UHealthBarWidget* HealthBar;
 
-	UFUNCTION(BlueprintCallable)
-	void UpdateHealth(int32 Value);
+	//UFUNCTION(BlueprintCallable)
+	//void UpdateHealth(int32 Value);
+
+private:
+	UPROPERTY()
+	TArray<bool> IsUsed_UsableItem;
+
+	UPROPERTY()
+	TArray<bool> IsUsed_Equipment;
+
+	UPROPERTY()
+	TMap<FName, int32> ItemList;
+
+
+	UPROPERTY(VisibleAnywhere)
+	int32 UsableItemCellNum = 5;
+
+	UPROPERTY(VisibleAnywhere)
+	int32 EquipmentItemCellNum = 2;
 };

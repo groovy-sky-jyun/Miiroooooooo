@@ -3,7 +3,7 @@
 
 #include "Component/HealthComponent.h"
 #include "PlayerCharacter.h"
-
+/*
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
 {
@@ -17,12 +17,12 @@ UHealthComponent::UHealthComponent()
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	/*
+	
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(GetOwner());
 	if (PlayerCharacter) {
 		if (PlayerCharacter->PlayerWidget)
 			ItemWidget = PlayerCharacter->PlayerWidget;
-	}*/
+	}
 }
 
 
@@ -48,3 +48,4 @@ void UHealthComponent::SubHealth(float Value)
 	ItemWidget->UpdateHealth(CurrentHealth);
 }
 
+*/

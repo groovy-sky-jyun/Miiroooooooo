@@ -16,6 +16,6 @@ class MIIROOOOOOOO_API AItemChainSaw : public AEquipmentItems
 
 public:
 	virtual void SetName() override { ItemName = EItemName::ChainSaw; };
-	
+
 	virtual void EffectOnProssession() override;
 };

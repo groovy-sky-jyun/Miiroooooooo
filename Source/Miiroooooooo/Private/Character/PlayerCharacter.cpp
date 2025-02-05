@@ -12,7 +12,7 @@
 #include "MiiroooPlayerController.h"
 #include "CollisionQueryParams.h"
 #include "BaseItem.h"
-#include "ItemComponent.h"
+#include "InteractionItemComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -57,6 +57,8 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ItemComponent = NewObject<AInteractionItemComponent>(this);
+
 	// Enhanced Input Subsystem 가져오기
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
@@ -69,15 +71,13 @@ void APlayerCharacter::BeginPlay()
 	SetOriginSpeed();
 
 	SetWidgetToViewPort();
-
-	ItemComponent = NewObject<UItemComponent>();
 }
 
 void APlayerCharacter::SetWidgetToViewPort()
 {
 	// Game Controller에서 실행하는걸로 수정
 	if (WidgetClass) {
-		UHUDWidget* PlayerWidget = CreateWidget<UHUDWidget>(GetWorld(), WidgetClass);
+		PlayerWidget = CreateWidget<UHUDWidget>(GetWorld(), WidgetClass);
 		if (PlayerWidget) {
 			PlayerWidget->AddToViewport();
 		}

@@ -3,6 +3,7 @@
 #include "MiirooooooooGameMode.h"
 #include "MiirooooooooCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "MiirooooGameInstance.h"
 
 AMiirooooooooGameMode::AMiirooooooooGameMode()
 {
@@ -12,4 +13,12 @@ AMiirooooooooGameMode::AMiirooooooooGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+}
+
+void AMiirooooooooGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UMiirooooGameInstance* GameInstance = Cast<UMiirooooGameInstance>(GetGameInstance());
+
 }

@@ -30,7 +30,7 @@ ABaseItem::ABaseItem()
 void ABaseItem::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	SetName();
 }
 
 // Called every frame

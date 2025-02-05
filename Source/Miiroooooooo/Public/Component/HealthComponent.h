@@ -12,7 +12,7 @@ UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MIIROOOOOOOO_API UHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
-
+	/*
 public:	
 	// Sets default values for this component's properties
 	UHealthComponent();
@@ -39,5 +39,5 @@ private:
 	float CurrentHealth;
 
 	UPROPERTY(VisibleAnywhere, Category = "Health")
-	float MaxHealth = 100;
+	float MaxHealth = 100;*/
 };

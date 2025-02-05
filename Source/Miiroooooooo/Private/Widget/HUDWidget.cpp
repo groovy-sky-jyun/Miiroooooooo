@@ -15,11 +15,10 @@
 void UHUDWidget::NativeConstruct() {
 	CastHorizontalChild();
 	SetInVisibleWidgets();
-	UpdateHealth(1.0f);
+	//UpdateHealth(1.0f);
 
-	IndexInUsed.SetNum(UsableItemCellNum);
-	UsableItems.SetNum(UsableItemCellNum);
-	IndexInUsed.SetNum(UsableItemCellNum);
+	IsUsed_UsableItem.SetNum(UsableItemCellNum);
+	IsUsed_Equipment.SetNum(EquipmentItemCellNum);
 }
 
 void UHUDWidget::CastHorizontalChild()
@@ -42,108 +41,71 @@ void UHUDWidget::SetInVisibleWidgets()
 	}
 }
 
-void UHUDWidget::UpdateItemToInventory(int Index, int Count)
+void UHUDWidget::UpdateUsableItemCount(FName ItemName, int Count)
 {
 	FText NewCount = FText::AsNumber(Count);
-
-	if (CellWidgets.IsValidIndex(Index) && Count > 0) {
+	if (ItemList.Contains(ItemName))
+	{
+		int32 Index = ItemList[ItemName];
 		UInventorySquareWidget* CellWidget = CellWidgets[Index];
-		if (CellWidget) {
-			CellWidget->SetVisible(true);
-			CellWidget->SetCountText(NewCount);
-		} 
-	}
-	else if (CellWidgets.IsValidIndex(Index) && Count == 0) {
-		UInventorySquareWidget* CellWidget = CellWidgets[Index];
-		if (CellWidget) {
-			CellWidget->SetVisible(false);
-			CellWidget->SetCountText(NewCount);
-		}
-	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("HUDWidget : Is Not Valid an Item Index : %d"), Index);
-	}
-}
-
-void UHUDWidget::AddUsableItem(FName ItemName, int32 Count)
-{
-	int32 UsedIndex = UsableItems.Find(ItemName);
-	FText NewCount = FText::AsNumber(Count);
-
-	if (UsedIndex && CellWidgets.IsValidIndex(UsedIndex))
-	{
-		UInventorySquareWidget* CellWidget = CellWidgets[UsedIndex];
-		check(CellWidget);
-
-		CellWidget->SetTexture2D(SetInventoryTexture(ItemName));
-		CellWidget->SetCountText(NewCount);
-		CellWidget->SetVisible(true);
-	}
-	else if(!UsedIndex)
-	{
-		int32 UnUsedIndex = FindUnUsedIndex();
-
-		CellWidgets.IsValidIndex(UnUsedIndex);
-		UInventorySquareWidget* CellWidget = CellWidgets[UnUsedIndex];
-		check(CellWidget);
-		
-		// 사용중으로 변경
-		IndexInUsed[UnUsedIndex] = true;
-		UsableItems[UnUsedIndex] = ItemName;
-
-		CellWidget->SetTexture2D(SetInventoryTexture(ItemName));
-		CellWidget->SetCountText(NewCount);
-		CellWidget->SetVisible(true);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("HUDWidget::AddUsableItem : CellWidget is null"));
-	}
-}
-
-void UHUDWidget::UseUsableItem(FName ItemName, int32 Count)
-{
-	int32 UsableIndex = UsableItems.Find(ItemName);
-	FText NewCount = FText::AsNumber(Count);
-
-	if (UsableIndex && CellWidgets.IsValidIndex(UsableIndex))
-	{
-		UInventorySquareWidget* CellWidget = CellWidgets[UsableIndex];
 		check(CellWidget);
 
 		if (Count > 0)
 		{
 			CellWidget->SetCountText(NewCount);
 		}
-		else
+		else //Remove로 아이템 모두 소진한 경우
 		{
+			IsUsed_UsableItem[Index] = false;
+			ItemList.Remove(ItemName);
+			CellWidget->SetCountText(FText::AsNumber(0));
 			CellWidget->SetVisible(false);
-			IndexInUsed[UsableIndex] = false;
-			UsableItems[UsableIndex] = "";
 		}
 	}
 }
 
-int32 UHUDWidget::FindUnUsedIndex()
+void UHUDWidget::AddUsableItem(FName ItemName, UTexture2D* Texture)
 {
-	for (int32 index = 0; index < IndexInUsed.Num(); index++)
+	for (int32 i = 0; i < IsUsed_UsableItem.Num(); i++)
 	{
-		if (!IndexInUsed[index])
+		if (!IsUsed_UsableItem[i])
 		{
-			return index;
+			IsUsed_UsableItem[i] = true;
+			ItemList.Add(ItemName, i);
+
+			UInventorySquareWidget* CellWidget = CellWidgets[i];
+			check(CellWidget);
+			CellWidget->SetTexture2D(Texture);
+			CellWidget->SetCountText(FText::AsNumber(1));
+			CellWidget->SetVisible(true);
+
+			break;
 		}
 	}
-	return -1;
 }
 
-UTexture2D* UHUDWidget::SetInventoryTexture(FName ItemName)
+void UHUDWidget::AddEquipmentItem(FName ItemName, UTexture2D* Texture)
 {
-	UGameInstance* BaseGameInstance = UGameplayStatics::GetGameInstance(GetWorld());
-	UMiirooooGameInstance* GameInstance = Cast<UMiirooooGameInstance>(BaseGameInstance);
-	check(GameInstance);
-	return GameInstance->GetItemTexture(ItemName);
+	if (!IsUsed_Equipment[0]) {
+		IsUsed_Equipment[0] = true;
+
+		UInventorySquareWidget* CellWidget = CellWidgets[5];
+		check(CellWidget);
+		CellWidget->SetTexture2D(Texture);
+		CellWidget->SetCountText(FText::AsNumber(1));
+		CellWidget->SetVisible(true);
+	}
+	else
+	{
+		UInventorySquareWidget* CellWidget = CellWidgets[6];
+		check(CellWidget);
+		CellWidget->SetTexture2D(Texture);
+		CellWidget->SetCountText(FText::AsNumber(1));
+		CellWidget->SetVisible(true);
+	}
 }
 
+/*
 void UHUDWidget::UpdateHealth(int32 Value)
 {
 	if (HealthBar) {
@@ -151,4 +113,5 @@ void UHUDWidget::UpdateHealth(int32 Value)
 		HealthBar->SetHealthLabel(Value*100);
 	}
 }
+*/
 
