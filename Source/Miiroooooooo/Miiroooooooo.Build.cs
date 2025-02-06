@@ -16,11 +16,14 @@ public class Miiroooooooo : ModuleRules
             "Miiroooooooo/Public/Component",
             "Miiroooooooo/Public/Controller",
             "Miiroooooooo/Public/GameMode",
-			"Miiroooooooo/Public/Items",
+            "Miiroooooooo/Public/GameInstance",
+            "Miiroooooooo/Public/Items",
             "Miiroooooooo/Public/Items/UsableItems",
             "Miiroooooooo/Public/Items/EquipmentItems",
             "Miiroooooooo/Public/Maze",
-			"Miiroooooooo/Public/Widget"        
+            "Miiroooooooo/Public/Trap",
+            "Miiroooooooo/Public/Structure",
+            "Miiroooooooo/Public/Widget"        
         });
 	}
 }

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "InventorySquareWidget.h"
 #include "HealthBarWidget.h"
+#include "BaseTrap.h"
 #include "HUDWidget.generated.h"
 
 /**
@@ -15,8 +16,6 @@ UCLASS()
 class MIIROOOOOOOO_API UHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
-
-
 
 public:
 	UPROPERTY(meta=(BindWidget))
@@ -67,8 +66,14 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UHealthBarWidget* HealthBar;
 
-	//UFUNCTION(BlueprintCallable)
-	//void UpdateHealth(int32 Value);
+	UPROPERTY()
+	int CurrentHp=100;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="CustomReference")
+	ABaseTrap* BaseTrap;
+
+	UFUNCTION(BlueprintCallable)
+	void DamagedHealth(int32 Value);
 
 private:
 	UPROPERTY()

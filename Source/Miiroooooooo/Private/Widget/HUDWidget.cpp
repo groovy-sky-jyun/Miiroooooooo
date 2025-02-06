@@ -10,15 +10,23 @@
 #include "Components/ProgressBar.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
+#include "BaseTrap.h"
+#include "Engine/World.h"
+#include "EngineUtils.h"
 
 //HUD Widget √ ±‚»≠
 void UHUDWidget::NativeConstruct() {
 	CastHorizontalChild();
 	SetInVisibleWidgets();
-	//UpdateHealth(1.0f);
 
 	IsUsed_UsableItem.SetNum(UsableItemCellNum);
 	IsUsed_Equipment.SetNum(EquipmentItemCellNum);
+
+
+	for (TActorIterator<ABaseTrap> It(GetWorld()); It; ++It)
+	{
+		It->DamagedOnChange.AddUObject(this, &UHUDWidget::DamagedHealth);
+	}
 }
 
 void UHUDWidget::CastHorizontalChild()
@@ -105,13 +113,17 @@ void UHUDWidget::AddEquipmentItem(FName ItemName, UTexture2D* Texture)
 	}
 }
 
-/*
-void UHUDWidget::UpdateHealth(int32 Value)
+
+void UHUDWidget::DamagedHealth(int32 Value)
 {
+	int32 NewHp = CurrentHp - Value;
+
 	if (HealthBar) {
-		HealthBar->SetHealthBar(Value);
-		HealthBar->SetHealthLabel(Value*100);
+		CurrentHp = NewHp;
+		HealthBar->SetHealthBar(NewHp * 0.01);
+		HealthBar->SetHealthLabel(NewHp);
+
 	}
 }
-*/
+
 

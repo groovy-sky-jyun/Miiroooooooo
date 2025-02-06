@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "UsableItem.h"
-#include "HealthComponent.h"
 #include "RandomPotionItem.generated.h"
 
 /**
