@@ -7,6 +7,4 @@
 void UMiirooooGameInstance::Init()
 {
 	Super::Init();
-
-	HpComponent = GetWorld()->SpawnActor<AHpComponent>(AHpComponent::StaticClass());
 }

@@ -82,24 +82,25 @@ void AMazeGenerator::GenerateMaze()
 
 void AMazeGenerator::MakePassages(int x, int y)
 {
-    //UE_LOG(LogTemp, Log, TEXT("MazeGrid : [%d][%d]"), x, y);
     FirstRemoveCount++;
     WallCount++;
-    /*
-    * [방문하지 않은 곳이라면]
-    * Stack에 Add
-    * 방문 = true
-    */
-    if (!CheckList[x].bRow[y]) { 
+
+    // 방문하지 않은 칸 Stack에 Add
+    if (!CheckList[x].bRow[y]) 
+    { 
         Stack.Add(MazeGrid[x].Row[y]);
         CheckList[x].bRow[y] = true;
     }
     
-    /*
-    * [주변 방문하지 않은 큐브들 List 가져오기]
-    */
+    // 현재 칸 기준, 사면(상하좌우) 중 방문하지 않은 칸 List 가져오기
     TArray<AWall*> FourWallList;
     FourWallList = CheckVisitList(x, y, FourWallList);
+
+    //방향 연속 조건 위배 하면 해당 방향 큐브 List에서 제거
+    if (CheckSequenceDirection() != "None") 
+    {   
+        RemoveSequenceList(FourWallList, MazeGrid[x].Row[y]);
+    }
 
     /*
     * [주변 방문하지 않은 큐브가 하나라도 있다면]
@@ -107,20 +108,13 @@ void AMazeGenerator::MakePassages(int x, int y)
     * 2) 현재큐브까지 3개 이상 같은 방향으로 이동했다면 List에서 해당 방향 제외
     * 3) List 에서 랜덤 큐브 뽑음
     * 4) 랜덤 큐브와 현재 큐브 사이의 벽 제거
-    * 
+    *
     * [주변 방문하지 않은 큐브가 하나라도 없다면]
     * 1) Stack 에서 Pop 한다.
     * 2) Stack 의 Top 큐브 주변에 방문하지 않은 큐브가 있는지 확인한다.
     */
-    if (CheckSequenceDirection() != "None") { //방향 연속 조건 위배 하면 해당 방향 큐브 List에서 제거
-        RemoveSequenceList(FourWallList, MazeGrid[x].Row[y]);
-    }
-    
-    /*for (int i = 0; i < FourWallList.Num(); i++) {
-        UE_LOG(LogTemp, Warning, TEXT("FourWallList[%d][%d]"), FourWallList[i]->IndexX, FourWallList[i]->IndexY);
-    }*/
-
-    if (FourWallList.Num() > 0) {
+    if (FourWallList.Num() > 0) 
+    {
         int32 ShuffleNum = FMath::RandRange(0, FourWallList.Num() - 1);
         DeleteWall(MazeGrid[x].Row[y], FourWallList[ShuffleNum]);
         DirectionCounting(MazeGrid[x].Row[y], FourWallList[ShuffleNum]);
@@ -130,7 +124,8 @@ void AMazeGenerator::MakePassages(int x, int y)
         }
         MakePassages(FourWallList[ShuffleNum]->IndexX, FourWallList[ShuffleNum]->IndexY);
     }
-    else {
+    else
+    {
         Stack.Pop();
         PopCount++;
         if (PopCount == 10) {
@@ -144,7 +139,6 @@ void AMazeGenerator::MakePassages(int x, int y)
             return;
         }
     }
-    
 }
 
 TArray<AWall*> AMazeGenerator::CheckVisitList(int x, int y, TArray<AWall*> FourWallList)

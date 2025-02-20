@@ -39,13 +39,6 @@ public:
 	UFUNCTION()
 	void SetInteractWidget(bool value);
 
-
-	UPROPERTY()
-	EItemType ItemType = EItemType::Equipment;
-
-	UFUNCTION()
-	virtual EItemType GetItemType() { return EItemType(); };
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EItemName ItemName;
 

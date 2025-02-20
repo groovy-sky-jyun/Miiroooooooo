@@ -46,42 +46,29 @@ APlayerCharacter::APlayerCharacter()
 
 	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapStart);
 	CollisionBox->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapEnd);
-
-	
-
-	//HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-	
 }
 
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ItemComponent = NewObject<AInteractionItemComponent>(this);
-
-	// Enhanced Input Subsystem 가져오기
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(GetController());
+	if (PlayerController != nullptr)
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		//HUD AddToViewport()
+		PlayerController->ShowHUDWidget();
+
+		// Enhanced Input Subsystem 가져오기
+		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		if (Subsystem != nullptr)
 		{
-			// Input Mapping Context 추가
 			Subsystem->AddMappingContext(InputMappingContext, 0);
 		}
 	}
+
+	ItemComponent = NewObject<AInteractionItemComponent>(this);
+	
 	SetOriginSpeed();
-
-	SetWidgetToViewPort();
-}
-
-void APlayerCharacter::SetWidgetToViewPort()
-{
-	// Game Controller에서 실행하는걸로 수정
-	if (WidgetClass) {
-		PlayerWidget = CreateWidget<UHUDWidget>(GetWorld(), WidgetClass);
-		if (PlayerWidget) {
-			PlayerWidget->AddToViewport();
-		}
-	}
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -103,7 +90,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		EnhancedInputComponent->BindAction(PressFAction, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
 
-		//EnhancedInputComponent->BindAction(UseItemAction, ETriggerEvent::Started, this, &APlayerCharacter::UseItemKey);
+		EnhancedInputComponent->BindAction(UseItemAction, ETriggerEvent::Started, this, &APlayerCharacter::UseItemKey);
 	}
 }
 
@@ -145,7 +132,6 @@ void APlayerCharacter::SetSpeed(float Value)
 	GetCharacterMovement()->MaxWalkSpeed = Value;
 	FTimerHandle TimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &APlayerCharacter::SetOriginSpeed, 2, false);
-	
 }
 
 void APlayerCharacter::SetOriginSpeed()
@@ -173,7 +159,7 @@ void APlayerCharacter::OnOverlapStart(UPrimitiveComponent* OverlappedComponent, 
 	ABaseItem* ItemClass = Cast<ABaseItem>(OtherActor);
 	if (ItemClass) {
 		ItemClass->SetInteractWidget(true);
-		ItemComponent->AddOverlapItem(ItemClass);
+		ItemComponent->OverlapItem();
 	}
 }
 // Overlap 끝났을 때 실행
@@ -182,7 +168,7 @@ void APlayerCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 	ABaseItem* ItemClass = Cast<ABaseItem>(OtherActor);
 	if (ItemClass) {
 		ItemClass->SetInteractWidget(false);
-		ItemComponent->RemoveOverlapItem(ItemClass);
+		ItemComponent->UnOverlapItem();
 	}
 }//---------------------
 
@@ -194,27 +180,25 @@ void APlayerCharacter::PickUpItem()
 }//---------------------
 
 
-/*---[아이템 사용]---
+//---[아이템 사용]---
 void APlayerCharacter::UseItemKey()
 {
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(PC);
+	AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(GetWorld()->GetFirstPlayerController());
 
 	if (PlayerController->IsInputKeyDown(EKeys::One)) { //1번 슬롯
-		//ItemsComponent->PressUseItem(1);
+		ItemComponent->PressUseItem(1);
 	}
 	else if (PlayerController->IsInputKeyDown(EKeys::Two)) { //2번 슬롯
-		//ItemsComponent->PressUseItem(2);
+		ItemComponent->PressUseItem(2);
 	}
 	else if (PlayerController->IsInputKeyDown(EKeys::Three)) { //3번 슬롯
-		//ItemsComponent->PressUseItem(3);
+		ItemComponent->PressUseItem(3);
 	}
 	else if (PlayerController->IsInputKeyDown(EKeys::Four)) { //4번 슬롯
-		//ItemsComponent->PressUseItem(4);
+		ItemComponent->PressUseItem(4);
 	}
 	else if (PlayerController->IsInputKeyDown(EKeys::Five)) { //5번 슬롯
-		//ItemsComponent->PressUseItem(5);
+		ItemComponent->PressUseItem(5);
 	}
 }
 //---------------------
-*/

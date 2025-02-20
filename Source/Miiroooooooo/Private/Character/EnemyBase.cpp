@@ -1,8 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ItemChainSaw.h"
+#include "Character/EnemyBase.h"
 
-void AItemChainSaw::EffectOnProssession()
-{
-}

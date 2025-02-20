@@ -16,5 +16,4 @@ class MIIROOOOOOOO_API UMiirooooGameInstance : public UGameInstance
 public:
 	virtual void Init() override;
 
-	AHpComponent* HpComponent;
 };

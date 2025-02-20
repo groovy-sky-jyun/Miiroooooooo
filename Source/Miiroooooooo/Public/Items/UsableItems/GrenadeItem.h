@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "UsableItem.h"
-#include "FireBombItem.generated.h"
+#include "GrenadeItem.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MIIROOOOOOOO_API AFireBombItem : public AUsableItem
+class MIIROOOOOOOO_API AGrenadeItem : public AUsableItem
 {
 	GENERATED_BODY()
 
 public:
-	virtual void SetName() override { ItemName = EItemName::FireBomb; };
+	virtual void SetName() override { ItemName = EItemName::Grenade; };
 	virtual void UseItem() override;
 };

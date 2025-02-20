@@ -3,18 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UsableItem.h"
-#include "AcidBloodItem.generated.h"
+#include "Items/UsableItems/UsableItem.h"
+#include "PickaxItem.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MIIROOOOOOOO_API AAcidBloodItem : public AUsableItem
+class MIIROOOOOOOO_API APickaxItem : public AUsableItem
 {
 	GENERATED_BODY()
-	
+
 public:
-	virtual void SetName() override { ItemName = EItemName::AcidBlood; };
+	virtual void SetName() override { ItemName = EItemName::Pickax; };
+
 	virtual void UseItem() override;
 };

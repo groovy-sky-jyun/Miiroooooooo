@@ -26,7 +26,5 @@ public:
 public:
 	virtual void UseItem() {};
 
-	virtual EItemType GetItemType() override { return EItemType::Usable; };
-
 	virtual void SetName() override {};
 };

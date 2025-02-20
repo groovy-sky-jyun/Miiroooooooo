@@ -17,6 +17,25 @@ protected:
     virtual void BeginPlay() override;
 
 public:
-  
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UHUDWidget> BP_HUDWidget;
 
+	UFUNCTION()
+	void ShowHUDWidget();
+
+	UFUNCTION()
+	void HideHUDWidget();
+
+
+public:
+	UFUNCTION()
+	void AddItemToInventory(FName ItemName, UTexture2D* Texture);
+
+	UFUNCTION()
+	void UpdateItemToInventory(FName ItemName, int Count);
+
+
+private:
+	UPROPERTY()
+	class UHUDWidget* HUDWidget;
 };

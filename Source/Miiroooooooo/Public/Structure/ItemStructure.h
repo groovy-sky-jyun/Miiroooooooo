@@ -14,18 +14,9 @@ enum class EItemName : uint8
 {
 	HealthPotion,
 	RandomPotion,
-	AcidBlood,
-	FireBomb,
 	Spray,
-	ChainSaw,
-	FlameSuit
-};
-
-UENUM(BlueprintType)
-enum class EItemType : uint8
-{
-	Equipment,
-	Usable
+	Grenade,
+	Pickax
 };
 
 USTRUCT(BlueprintType)
@@ -47,9 +38,6 @@ struct FItemInformation : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Probability;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EItemType ItemType;
 };
 
 USTRUCT(BlueprintType)

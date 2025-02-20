@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ItemFlameSuit.h"
+#include "Items/UsableItems/PickaxItem.h"
 
-void AItemFlameSuit::EffectOnProssession()
+void APickaxItem::UseItem()
 {
 }

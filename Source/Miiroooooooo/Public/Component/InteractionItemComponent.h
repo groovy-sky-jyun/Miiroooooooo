@@ -18,77 +18,77 @@ public:
 	// Sets default values for this actor's properties
 	AInteractionItemComponent();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CustomReference")
-	UDataTable* ItemData;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CustomReference")
-	UHUDWidget* HUDWidgetComponent; 
-
-	UFUNCTION()
-	void SetUsableItemFromData();
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+
+public:	
 	UFUNCTION()
-	void AddOverlapItem(ABaseItem* Item);
+	void OverlapItem();
 
 	UFUNCTION()
-	void RemoveOverlapItem(ABaseItem* Item);
+	void UnOverlapItem();
 
-public:
 	UFUNCTION()
 	void PickUpAnItem();
 
 	UFUNCTION()
-	ABaseItem* GetItemCloseToPlayer();
+	void PressUseItem(int KeyNum);
 
-	UFUNCTION()
-	UTexture2D* GetItemTexture(FName ItemName);
-
-	UFUNCTION()
-	void AddEquipmentItem(FName ItemName);
-
-	UFUNCTION()
-	void AddUsableItem(FName ItemName);
-
-	UFUNCTION()
-	FName GetRandomItem();
-
-	UFUNCTION()
-	EItemName GetProbabilisticItem();
-
-	UFUNCTION()
-	FName EnumValueToFName(EItemName Value);
-
-public:
-	//UFUNCTION()
-	//void UseItem();
 
 private:
 	UPROPERTY()
-	TArray<ABaseItem*> OverlapItems;
+	bool bIsOverlapItem;
+
+	UPROPERTY(VisibleAnywhere, Category = "CustomReference")
+	UDataTable* ItemData;
+
+	UPROPERTY(VisibleAnywhere, Category = "CustomReference")
+	UHUDWidget* HUDWidgetComponent;
+
+	UFUNCTION()
+	void SetItemData();
 
 	UPROPERTY()
-	TArray<int32> OverlapNum;
-
-	UPROPERTY()
-	int32 UsableItemTotal;
+	int32 ItemTotal;
 
 	UPROPERTY()
 	TObjectPtr<class APlayerCharacter> Player;
 
 	UPROPERTY(VisibleAnywhere)
-	TMap<FName, int32> ItemList;
-
-	UPROPERTY(VisibleAnywhere)
-	TMap<EItemName, float> UsableItemProbabilistic;
+	TMap<EItemName, float> ItemProbabilisticInfo; //<¾ÆÀÌÅÛÀÌ¸§,È®·ü>
 
 	UPROPERTY(VisibleAnywhere)
 	float ProbabilitySum; //È®·üÇÕ
+
+	UFUNCTION()
+	EItemName GetRandomItem();
+
+	UFUNCTION()
+	void AddItem(FName ItemName);
+
+	UFUNCTION()
+	UTexture2D* GetItemTexture(FName ItemName);
+
+	UFUNCTION()
+	FName EnumValueToFName(EItemName Value);
+
+
+private:
+	UPROPERTY()
+	int32 InventoryTotal=5;
+
+	UPROPERTY()
+	TArray<bool> bIsUsedInventory;
+
+	UPROPERTY()
+	TArray<FName> ItemInventory;
+
+	UPROPERTY(VisibleAnywhere)
+	TMap<FName, int32> OwnItemList;
 };

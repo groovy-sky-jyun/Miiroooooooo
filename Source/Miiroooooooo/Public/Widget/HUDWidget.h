@@ -33,11 +33,33 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UInventorySquareWidget* ItemCell_5 ;
 
-	UPROPERTY(meta = (BindWidget))
-	UInventorySquareWidget* ItemCell_6;
+	virtual void NativeConstruct() override;
 
+	UFUNCTION(BlueprintCallable)
+	void UpdateItemCount(FName ItemName, int Count);
+
+	UFUNCTION()
+	void AddItem(FName ItemName, UTexture2D* Texture);
+
+public:
 	UPROPERTY(meta = (BindWidget))
-	UInventorySquareWidget* ItemCell_7;
+	UHealthBarWidget* HealthBar;
+
+	UFUNCTION(BlueprintCallable)
+	void DamagedHealth(int32 Value);
+
+private:
+	UPROPERTY()
+	TArray<UInventorySquareWidget*> CellWidgets;
+
+	UPROPERTY()
+	TArray<bool> IsUsed_Item;
+
+	UPROPERTY()
+	TMap<FName, int32> ItemList;
+
+	UPROPERTY(VisibleAnywhere)
+	int32 ItemCellNum = 5;
 
 	UFUNCTION(BlueprintCallable)
 	void CastHorizontalChild();
@@ -45,50 +67,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetInVisibleWidgets();
 
-	virtual void NativeConstruct() override;
-	
-public:
-	UPROPERTY()
-	TArray<UInventorySquareWidget*> CellWidgets;
-
-	UFUNCTION(BlueprintCallable)
-	void UpdateUsableItemCount(FName ItemName, int Count);
-
-	UFUNCTION()
-	void AddUsableItem(FName ItemName, UTexture2D* Texture);
-
-	UFUNCTION()
-	void AddEquipmentItem(FName ItemName, UTexture2D* Texture);
-
-
-
-public:
-	UPROPERTY(meta = (BindWidget))
-	UHealthBarWidget* HealthBar;
-
-	UPROPERTY()
-	int CurrentHp=100;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="CustomReference")
-	ABaseTrap* BaseTrap;
-
-	UFUNCTION(BlueprintCallable)
-	void DamagedHealth(int32 Value);
-
 private:
 	UPROPERTY()
-	TArray<bool> IsUsed_UsableItem;
-
-	UPROPERTY()
-	TArray<bool> IsUsed_Equipment;
-
-	UPROPERTY()
-	TMap<FName, int32> ItemList;
-
-
-	UPROPERTY(VisibleAnywhere)
-	int32 UsableItemCellNum = 5;
-
-	UPROPERTY(VisibleAnywhere)
-	int32 EquipmentItemCellNum = 2;
+	int CurrentHp = 100;
 };

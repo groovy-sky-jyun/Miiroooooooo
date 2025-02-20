@@ -40,6 +40,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
 	class UInputAction* LookAroundAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
+	class UInputAction* UseItemAction;
+
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
 
@@ -69,31 +72,17 @@ public:
 	UPROPERTY()
 	bool bIsReverse;
 
-protected:
 
+protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera")
 	class USpringArmComponent* CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Camera")
 	class UCameraComponent* CameraComponent;
 
-	
-public:
-	// Widget 초기화
-	UFUNCTION(BlueprintCallable)
-	void SetWidgetToViewPort();
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Custom_Reference")
-	//UHUDWidget* HUDWidget;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Custom_Reference")
-	TSubclassOf<UHUDWidget> WidgetClass;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UHUDWidget* PlayerWidget;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class UBoxComponent* CollisionBox;
+
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -105,37 +94,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex);
 
-	// 아이템 수집 --
+	//--- 아이템 ---
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	class UInputAction* PressFAction;
 
 	UFUNCTION()
 	void PickUpItem();
-	//---
-
-
-
-	/*
-	// 아이템 사용 --
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
-	class UInputAction* UseItemAction;
 
 	UFUNCTION()
 	void UseItemKey();
-	//---
-	
+	//-------
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
-	//class UInventoryComponent* InventoryComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
-	class UInteractionItems* ItemsComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
-	class UHealthComponent* HealthComponent;
-	*/
 public:
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Trace")
 	class USceneComponent* WallTrace;
 };
