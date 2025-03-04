@@ -15,19 +15,25 @@ class MIIROOOOOOOO_API ARandomPotionItem : public AUsableItem
 	GENERATED_BODY()
 	
 public:
-	virtual void SetName() override { ItemName = EItemName::RandomPotion; };
+	virtual bool bIsAvailableItem() override;
 
 	virtual void UseItem() override;
+
+
+
 
 private:
 	UPROPERTY(VisibleAnywhere)
 	float HealValue = 30.0f;
 
+	UPROPERTY(VisibleAnywhere)
+	float DamageValue = 30.0f;
+
 	UFUNCTION(BlueprintCallable)
 	void AddHealth();
 
 	UFUNCTION(BlueprintCallable)
-	void SubHealth();
+	void DamageHealth();
 
 	UFUNCTION(BlueprintCallable)
 	void FastSpeed();

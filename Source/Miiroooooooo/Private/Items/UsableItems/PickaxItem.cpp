@@ -3,6 +3,11 @@
 
 #include "Items/UsableItems/PickaxItem.h"
 
+bool APickaxItem::bIsAvailableItem()
+{
+    return true;
+}
+
 void APickaxItem::UseItem()
 {
 }

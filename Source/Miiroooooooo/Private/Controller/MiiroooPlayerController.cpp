@@ -33,3 +33,13 @@ void AMiiroooPlayerController::UpdateItemToInventory(FName ItemName, int Count)
 {
 	HUDWidget->UpdateItemCount(ItemName, Count);
 }
+
+void AMiiroooPlayerController::AddHealth(int32 Value)
+{
+	HUDWidget->HealHealth(Value);
+}
+
+void AMiiroooPlayerController::DamageHealth(int32 Value)
+{
+	HUDWidget->DamagedHealth(Value);
+}

@@ -19,7 +19,6 @@ public class Miiroooooooo : ModuleRules
             "Miiroooooooo/Public/GameInstance",
             "Miiroooooooo/Public/Items",
             "Miiroooooooo/Public/Items/UsableItems",
-            "Miiroooooooo/Public/Items/EquipmentItems",
             "Miiroooooooo/Public/Maze",
             "Miiroooooooo/Public/Trap",
             "Miiroooooooo/Public/Structure",

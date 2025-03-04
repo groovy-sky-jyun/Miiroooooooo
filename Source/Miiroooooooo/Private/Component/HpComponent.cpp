@@ -10,7 +10,7 @@
 AHpComponent::AHpComponent()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	CurrentHealth = MaxHealth;
 }
 
@@ -19,6 +19,7 @@ void AHpComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	//Dalegate : Damaged Trap
 	for (TActorIterator<ABaseTrap> It(GetWorld()); It; ++It)
 	{
 		It->DamagedOnChange.AddUObject(this, &AHpComponent::SubHealth);
@@ -33,13 +34,29 @@ void AHpComponent::Tick(float DeltaTime)
 
 }
 
-void AHpComponent::AddHealth(float Value)
+bool AHpComponent::bIsFullHealth()
 {
-	float NewValue = Value / MaxHealth;
-	CurrentHealth = FMath::Clamp(CurrentHealth + NewValue, 0.0f, 1.0f);
+	if (CurrentHealth >= 100)
+	{
+		return true;
+	}
+	return false;
+}
+
+void AHpComponent::AddHealth(int32 Value)
+{
+	CurrentHealth += Value;
+	if (CurrentHealth > 100)
+	{
+		CurrentHealth = 100;
+	}
 }
 
 void AHpComponent::SubHealth(int32 Value)
 {
 	CurrentHealth -= Value;
+	if (CurrentHealth < 0)
+	{
+		CurrentHealth = 0;
+	}
 }

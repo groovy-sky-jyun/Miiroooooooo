@@ -15,6 +15,7 @@ class MIIROOOOOOOO_API AGrenadeItem : public AUsableItem
 	GENERATED_BODY()
 
 public:
-	virtual void SetName() override { ItemName = EItemName::Grenade; };
+	virtual bool bIsAvailableItem() override;
+
 	virtual void UseItem() override;
 };

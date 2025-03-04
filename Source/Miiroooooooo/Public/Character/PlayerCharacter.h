@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "EnhancedInputComponent.h"
-#include "HUDWidget.h"
-#include "InteractionItemComponent.h"
+#include "ItemInventoryComponent.h"
+#include "HealthComponent.h"
 #include "PlayerCharacter.generated.h"
 
 
@@ -85,8 +85,11 @@ protected:
 
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	AInteractionItemComponent* ItemComponent;
+	UPROPERTY()
+	class UItemInventoryComponent* ItemComponent; 
+
+	UPROPERTY()
+	class UHealthComponent* HealthComponent;
 
 	UFUNCTION(BlueprintCallable)
 	void OnOverlapStart(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

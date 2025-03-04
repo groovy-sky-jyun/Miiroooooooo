@@ -34,6 +34,13 @@ public:
 	UFUNCTION()
 	void UpdateItemToInventory(FName ItemName, int Count);
 
+public:
+	UFUNCTION()
+	void AddHealth(int32 Value);
+
+	UFUNCTION()
+	void DamageHealth(int32 Value);
+
 
 private:
 	UPROPERTY()

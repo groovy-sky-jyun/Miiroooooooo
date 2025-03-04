@@ -3,6 +3,11 @@
 
 #include "GrenadeItem.h"
 
+bool AGrenadeItem::bIsAvailableItem()
+{
+	return true;
+}
+
 void AGrenadeItem::UseItem()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Use Item Grenade"));

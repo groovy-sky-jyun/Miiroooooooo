@@ -4,6 +4,12 @@
 #include "RandomPotionItem.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerCharacter.h"
+#include "MiiroooPlayerController.h"
+
+bool ARandomPotionItem::bIsAvailableItem()
+{
+	return true;
+}
 
 void ARandomPotionItem::UseItem()
 {
@@ -13,7 +19,7 @@ void ARandomPotionItem::UseItem()
 		AddHealth();
 		break;
 	case 1:
-		SubHealth();
+		DamageHealth();
 		break;
 	case 2:
 		FastSpeed();
@@ -28,15 +34,24 @@ void ARandomPotionItem::UseItem()
 
 }
 
-
 void ARandomPotionItem::AddHealth()
 {
-	
+	AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(GetWorld()->GetFirstPlayerController());
+	PlayerController->AddHealth(HealValue);
+
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	UHealthComponent* HealthComponent = PlayerCharacter->HealthComponent;
+	HealthComponent->AddHealth(HealValue);
 }
 
-void ARandomPotionItem::SubHealth()
+void ARandomPotionItem::DamageHealth()
 {
+	AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(GetWorld()->GetFirstPlayerController());
+	PlayerController->DamageHealth(DamageValue);
 	
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	UHealthComponent* HealthComponent = PlayerCharacter->HealthComponent;
+	HealthComponent->SubHealth(DamageValue);
 }
 
 void ARandomPotionItem::FastSpeed()

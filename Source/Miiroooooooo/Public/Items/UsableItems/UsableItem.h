@@ -26,5 +26,5 @@ public:
 public:
 	virtual void UseItem() {};
 
-	virtual void SetName() override {};
+	virtual bool bIsAvailableItem() { return true; };
 };

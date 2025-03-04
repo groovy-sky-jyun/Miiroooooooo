@@ -46,6 +46,9 @@ public:
 	UHealthBarWidget* HealthBar;
 
 	UFUNCTION(BlueprintCallable)
+	void HealHealth(int32 Value);
+
+	UFUNCTION(BlueprintCallable)
 	void DamagedHealth(int32 Value);
 
 private:
@@ -70,4 +73,7 @@ private:
 private:
 	UPROPERTY()
 	int CurrentHp = 100;
+
+	UFUNCTION()
+	void UpdateHealthBar(int32 NewHp);
 };

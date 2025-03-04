@@ -41,15 +41,15 @@ struct FItemInformation : public FTableRowBase
 };
 
 USTRUCT(BlueprintType)
-struct FUsableItemClass : public FTableRowBase
+struct FItemClass : public FTableRowBase
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EItemName ItemName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	AUsableItem* ItemClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) 
+	TSubclassOf<class ABaseItem> ItemClass; 
 };
 
 UCLASS()

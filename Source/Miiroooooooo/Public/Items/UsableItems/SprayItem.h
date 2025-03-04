@@ -17,9 +17,18 @@ class MIIROOOOOOOO_API ASprayItem : public AUsableItem
 	GENERATED_BODY()
 	
 public:
-	virtual void SetName() override { ItemName = EItemName::Spray; };
-
 	virtual void UseItem() override;
+	virtual bool bIsAvailableItem() override;
+	void DrawSpray();
 
-	class AWall* CheckTraceWall();
+private:
+	// Hit result
+	UPROPERTY()
+	FHitResult HitResult;
+	
+	UPROPERTY()
+	FVector StartLocation;
+
+	UPROPERTY()
+	FVector EndLocation;
 };

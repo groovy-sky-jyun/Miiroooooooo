@@ -25,7 +25,10 @@ public:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void AddHealth(float Value);
+	bool bIsFullHealth();
+
+	UFUNCTION(BlueprintCallable)
+	void AddHealth(int32 Value);
 
 	UFUNCTION(BlueprintCallable)
 	void SubHealth(int32 Value);

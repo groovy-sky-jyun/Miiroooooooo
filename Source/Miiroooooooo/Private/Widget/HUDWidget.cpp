@@ -89,16 +89,28 @@ void UHUDWidget::AddItem(FName ItemName, UTexture2D* Texture)
 	}
 }
 
-void UHUDWidget::DamagedHealth(int32 Value)
+void UHUDWidget::HealHealth(int32 Value)
 {
-	int32 NewHp = CurrentHp - Value;
-
-	if (HealthBar) {
-		CurrentHp = NewHp;
-		HealthBar->SetHealthBar(NewHp * 0.01);
-		HealthBar->SetHealthLabel(NewHp);
-
+	CurrentHp += Value;
+	if (CurrentHp > 100)
+	{
+		CurrentHp = 100;
 	}
+	UpdateHealthBar(CurrentHp);
 }
 
+void UHUDWidget::DamagedHealth(int32 Value)
+{
+	CurrentHp -= Value;
+	if (CurrentHp < 0)
+	{
+		CurrentHp = 0;
+	}
+	UpdateHealthBar(CurrentHp);
+}
 
+void UHUDWidget::UpdateHealthBar(int32 NewHp)
+{
+	HealthBar->SetHealthBar(NewHp * 0.01);
+	HealthBar->SetHealthLabel(NewHp);
+}

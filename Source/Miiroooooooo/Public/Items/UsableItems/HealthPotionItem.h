@@ -16,12 +16,14 @@ class MIIROOOOOOOO_API AHealthPotionItem : public AUsableItem
 	GENERATED_BODY()
 
 public:
-	virtual void SetName() override { ItemName = EItemName::HealthPotion; };
+	virtual bool bIsAvailableItem() override;
 
-	virtual void UseItem() override;
+	virtual void UseItem() override;	
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Heal")
-	float HealValue = 15.0f;
+
+private:
+	UPROPERTY(VisibleAnywhere,Category = "Heal")
+	float HealValue = 10.0f;
 
 
 };

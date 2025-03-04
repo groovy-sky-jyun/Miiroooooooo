@@ -15,7 +15,7 @@ class MIIROOOOOOOO_API APickaxItem : public AUsableItem
 	GENERATED_BODY()
 
 public:
-	virtual void SetName() override { ItemName = EItemName::Pickax; };
+	virtual bool bIsAvailableItem() override;
 
 	virtual void UseItem() override;
 };

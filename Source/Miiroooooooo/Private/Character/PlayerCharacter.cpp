@@ -12,7 +12,7 @@
 #include "MiiroooPlayerController.h"
 #include "CollisionQueryParams.h"
 #include "BaseItem.h"
-#include "InteractionItemComponent.h"
+#include "ItemInventoryComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -46,11 +46,16 @@ APlayerCharacter::APlayerCharacter()
 
 	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapStart);
 	CollisionBox->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapEnd);
+	 
+	ItemComponent = CreateDefaultSubobject<UItemInventoryComponent>(TEXT("ItemInventoryComponent")); 
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 }
 
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	
 
 	AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(GetController());
 	if (PlayerController != nullptr)
@@ -65,8 +70,6 @@ void APlayerCharacter::BeginPlay()
 			Subsystem->AddMappingContext(InputMappingContext, 0);
 		}
 	}
-
-	ItemComponent = NewObject<AInteractionItemComponent>(this);
 	
 	SetOriginSpeed();
 }
