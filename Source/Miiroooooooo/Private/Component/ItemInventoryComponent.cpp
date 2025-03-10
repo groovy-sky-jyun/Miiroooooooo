@@ -3,6 +3,7 @@
 
 #include "Component/ItemInventoryComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "PlayerCharacter.h"
 #include "Engine/World.h"
 #include "MiiroooPlayerController.h"
 #include "ItemStructure.h"
@@ -184,6 +185,11 @@ void UItemInventoryComponent::PressUseItem(int KeyNum)
 		if (UsableItem->bIsAvailableItem())
 		{
 			UsableItem->UseItem();
+
+			APlayerCharacter* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+			check(Player);
+			Player->bIsUsedItem = true;
+
 			OwnItemList[ItemName]--;
 			PlayerController->UpdateItemToInventory(ItemName, OwnItemList[ItemName]);
 

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "EnhancedInputComponent.h"
+#include "InputActionValue.h"
 #include "ItemInventoryComponent.h"
 #include "HealthComponent.h"
 #include "PlayerCharacter.generated.h"
@@ -30,18 +30,27 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	// 캐릭터 움직임
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
-	class UInputMappingContext* InputMappingContext;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
-	class UInputAction* MovementAction;
+// Input Section
+protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
-	class UInputAction* LookAroundAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	TObjectPtr<class UInputMappingContext> DefaultMappingContext;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Input")
-	class UInputAction* UseItemAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	TObjectPtr<class UInputAction> MoveAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	TObjectPtr<class UInputAction> LookAroundAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<class UInputAction> JumpAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
+	TObjectPtr<class UInputAction> UseItemAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<class UInputAction> PickupItemAction;
 
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
@@ -50,7 +59,9 @@ public:
 	void LookAround(const FInputActionValue& Value);
 
 
-	// 캐릭터 물리적 요소
+
+// 캐릭터 물리적 요소
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float MaxSpeed;
 
@@ -83,7 +94,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class UBoxComponent* CollisionBox;
 
-
+// Item Section
 public:
 	UPROPERTY()
 	class UItemInventoryComponent* ItemComponent; 
@@ -97,19 +108,37 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int OtherBodyIndex);
 
-	//--- 아이템 ---
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
-	class UInputAction* PressFAction;
-
 	UFUNCTION()
 	void PickUpItem();
 
 	UFUNCTION()
 	void UseItemKey();
-	//-------
 
+
+// Interaction Montage Section
+public:
+	UFUNCTION()
+	void Throwing();
+
+	UFUNCTION()
+	void Spraying();
+
+
+	
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Trace")
 	class USceneComponent* WallTrace;
+
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemState")
+	bool bIsUsedItem = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ItemState")
+	bool bIsUsedGrenade=false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemState")
+	bool bIsUsedSpray=false;
+
 };

@@ -4,15 +4,17 @@
 #include "PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
-#include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MiiroooPlayerController.h"
+#include "InputMappingContext.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "CollisionQueryParams.h"
 #include "BaseItem.h"
-#include "ItemInventoryComponent.h"
+#include "ABAnimInstance.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -49,13 +51,51 @@ APlayerCharacter::APlayerCharacter()
 	 
 	ItemComponent = CreateDefaultSubobject<UItemInventoryComponent>(TEXT("ItemInventoryComponent")); 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+
+	//Input
+	static ConstructorHelpers::FObjectFinder<UInputMappingContext> InputMappingContextRef(TEXT("'/Game/GameContent/Input/IMC_Player.IMC_Player'"));
+	if (InputMappingContextRef.Object)
+	{
+		DefaultMappingContext = InputMappingContextRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionMoveRef(TEXT("'/Game/GameContent/Input/IA_Movement.IA_Movement'"));
+	if (InputActionMoveRef.Object)
+	{
+		MoveAction = InputActionMoveRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionLookRef(TEXT("'/Game/GameContent/Input/IA_LookAround.IA_LookAround'"));
+	if (InputActionLookRef.Object)
+	{
+		LookAroundAction = InputActionLookRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("'/Game/GameContent/Input/IA_Jump.IA_Jump'"));
+	if (InputActionJumpRef.Object)
+	{
+		JumpAction = InputActionJumpRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionItemRef(TEXT("'/Game/GameContent/Input/IA_UseItem.IA_UseItem'"));
+	if (InputActionItemRef.Object)
+	{
+		UseItemAction = InputActionItemRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionPickupRef(TEXT("'/Game/GameContent/Input/IA_Pickup.IA_Pickup'"));
+	if (InputActionPickupRef.Object)
+	{
+		PickupItemAction = InputActionPickupRef.Object;
+	}
+
+
+
 }
 
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
 
 	AMiiroooPlayerController* PlayerController = Cast<AMiiroooPlayerController>(GetController());
 	if (PlayerController != nullptr)
@@ -65,9 +105,9 @@ void APlayerCharacter::BeginPlay()
 
 		// Enhanced Input Subsystem °¡Á®¿À±â
 		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-		if (Subsystem != nullptr)
+		if (Subsystem)
 		{
-			Subsystem->AddMappingContext(InputMappingContext, 0);
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
 	
@@ -84,17 +124,22 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	// Enhanced Input Component·Î Ä³½ºÆÃ
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		// Move
-		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
-		//LookAround
-		EnhancedInputComponent->BindAction(LookAroundAction, ETriggerEvent::Triggered, this, &APlayerCharacter::LookAround);
+	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+	
+	// Moving
+	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
 
-		EnhancedInputComponent->BindAction(PressFAction, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
+	// Looking
+	EnhancedInputComponent->BindAction(LookAroundAction, ETriggerEvent::Triggered, this, &APlayerCharacter::LookAround);
 
-		EnhancedInputComponent->BindAction(UseItemAction, ETriggerEvent::Started, this, &APlayerCharacter::UseItemKey);
-	}
+	// Item Interaction
+	EnhancedInputComponent->BindAction(PickupItemAction, ETriggerEvent::Started, this, &APlayerCharacter::PickUpItem);
+	EnhancedInputComponent->BindAction(UseItemAction, ETriggerEvent::Started, this, &APlayerCharacter::UseItemKey);
+
+	// Jumping
+	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
+	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+	
 }
 
 void APlayerCharacter::Move(const FInputActionValue& Value)
@@ -179,6 +224,7 @@ void APlayerCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 //---[¾ÆÀÌÅÛ È¹µæ]---
 void APlayerCharacter::PickUpItem()
 {
+	Spraying();
 	ItemComponent->PickUpAnItem();
 }//---------------------
 
@@ -202,6 +248,22 @@ void APlayerCharacter::UseItemKey()
 	}
 	else if (PlayerController->IsInputKeyDown(EKeys::Five)) { //5¹ø ½½·Ô
 		ItemComponent->PressUseItem(5);
+	}
+}
+void APlayerCharacter::Throwing()
+{
+	UABAnimInstance* AnimInstance = Cast<UABAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance)
+	{
+		AnimInstance->Throwing();
+	}
+}
+void APlayerCharacter::Spraying()
+{
+	UABAnimInstance* AnimInstance = Cast<UABAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance)
+	{
+		AnimInstance->Spraying();
 	}
 }
 //---------------------

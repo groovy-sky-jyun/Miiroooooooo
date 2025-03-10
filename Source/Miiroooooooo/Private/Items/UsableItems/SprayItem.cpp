@@ -63,6 +63,14 @@ bool ASprayItem::bIsAvailableItem()
 
 void ASprayItem::DrawSpray()
 {
+	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	check(PlayerPawn);
+
+	APlayerCharacter* Player = Cast<APlayerCharacter>(PlayerPawn);
+	check(Player);
+
+	Player->Spraying();
+
 	// Debugging: Line Trace Output to screen
 	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 2.0f, 0, 1.0f);
 
@@ -85,6 +93,7 @@ void ASprayItem::DrawSpray()
 		0.0f // Life Span: infinity
 	);
 	if (Decal) {
+
 		UE_LOG(LogTemp, Warning, TEXT("Decal Spawned Successfully!"));
 	}
 	else {

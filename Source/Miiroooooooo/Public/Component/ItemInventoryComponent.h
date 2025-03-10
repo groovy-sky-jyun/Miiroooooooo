@@ -39,7 +39,6 @@ public:
 	UFUNCTION()
 	void PressUseItem(int KeyNum);
 
-
 private:
 	UPROPERTY()
 	bool bIsOverlapItem;
