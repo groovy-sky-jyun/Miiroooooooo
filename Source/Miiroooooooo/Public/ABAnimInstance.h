@@ -50,19 +50,16 @@ protected:
 	float JumpingTheshould;
 
 
-	// Animation Montage
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage")
-	TObjectPtr<class UAnimMontage> ThrowingMontage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage")
-	TObjectPtr<class UAnimMontage> SprayMontage;
 
 	// Animation Montage
 public:
-	UFUNCTION()
-	void Throwing();
+	UFUNCTION(BlueprintCallable)
+	void Throwing(class UAnimMontage* Montage);
+
+	UFUNCTION(BlueprintCallable)
+	void Spraying(class UAnimMontage* Montage);
 
 	UFUNCTION()
-	void Spraying();
+	void AnimNotify_DrawSpray();
 };

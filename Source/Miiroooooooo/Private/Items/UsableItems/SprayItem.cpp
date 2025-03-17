@@ -9,7 +9,7 @@
 void ASprayItem::UseItem()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Use Item Spray"));
-	DrawSpray();
+	PlayAnimation();
 }
 
 bool ASprayItem::bIsAvailableItem()
@@ -61,7 +61,7 @@ bool ASprayItem::bIsAvailableItem()
 	}
 }
 
-void ASprayItem::DrawSpray()
+void ASprayItem::PlayAnimation()
 {
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	check(PlayerPawn);
@@ -70,6 +70,11 @@ void ASprayItem::DrawSpray()
 	check(Player);
 
 	Player->Spraying();
+}
+
+void ASprayItem::DrawSpray()
+{
+	bIsAvailableItem();
 
 	// Debugging: Line Trace Output to screen
 	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 2.0f, 0, 1.0f);
@@ -100,4 +105,5 @@ void ASprayItem::DrawSpray()
 		UE_LOG(LogTemp, Warning, TEXT("Failed to Spawn Decal!"));
 	}
 }
+
 

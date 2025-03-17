@@ -89,7 +89,17 @@ APlayerCharacter::APlayerCharacter()
 		PickupItemAction = InputActionPickupRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AnimMontageThrowRef(TEXT("'/Game/GameContent/Animation/AnimMontage/RTA_AM_Throw.RTA_AM_Throw'"));
+	if (AnimMontageThrowRef.Object)
+	{
+		ThrowingMontage = AnimMontageThrowRef.Object;
+	}
 
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AnimMontageSprayRef(TEXT("'/Game/GameContent/Animation/AnimMontage/RTA_AM_Spray.RTA_AM_Spray'"));
+	if (AnimMontageSprayRef.Object)
+	{
+		SprayMontage = AnimMontageSprayRef.Object;
+	}
 
 }
 
@@ -224,7 +234,6 @@ void APlayerCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 //---[¾ÆÀÌÅÛ È¹µæ]---
 void APlayerCharacter::PickUpItem()
 {
-	Spraying();
 	ItemComponent->PickUpAnItem();
 }//---------------------
 
@@ -255,7 +264,7 @@ void APlayerCharacter::Throwing()
 	UABAnimInstance* AnimInstance = Cast<UABAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance)
 	{
-		AnimInstance->Throwing();
+		AnimInstance->Throwing(ThrowingMontage);
 	}
 }
 void APlayerCharacter::Spraying()
@@ -263,7 +272,7 @@ void APlayerCharacter::Spraying()
 	UABAnimInstance* AnimInstance = Cast<UABAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance)
 	{
-		AnimInstance->Spraying();
+		AnimInstance->Spraying(SprayMontage);
 	}
 }
 //---------------------

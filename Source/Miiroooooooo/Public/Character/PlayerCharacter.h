@@ -115,6 +115,15 @@ public:
 	void UseItemKey();
 
 
+	// Animation Montage
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	TObjectPtr<class UAnimMontage> ThrowingMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	TObjectPtr<class UAnimMontage> SprayMontage;
+
+
 // Interaction Montage Section
 public:
 	UFUNCTION()
@@ -122,8 +131,6 @@ public:
 
 	UFUNCTION()
 	void Spraying();
-
-
 	
 
 public:

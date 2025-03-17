@@ -4,23 +4,13 @@
 #include "ABAnimInstance.h"
 #include "PlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Engine/World.h"
+#include "SprayItem.h"
 
 UABAnimInstance::UABAnimInstance()
 {
 	MovingTheshould = 3.0f;
 	JumpingTheshould = 100.0f;
-
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> AnimMontageThrowRef(TEXT("/Game/GameContent/Animation/AnimationSequence/AM_Throw.AM_Throw"));
-	if (AnimMontageThrowRef.Object)
-	{
-		ThrowingMontage = AnimMontageThrowRef.Object;
-	}
-
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> AnimMontageSprayRef(TEXT("/Script/Engine.AnimMontage'/Game/GameContent/Animation/AM_Spray.AM_Spray'"));
-	if (AnimMontageSprayRef.Object)
-	{
-		SprayMontage = AnimMontageSprayRef.Object;
-	}
 }
 
 void UABAnimInstance::NativeInitializeAnimation()
@@ -48,25 +38,29 @@ void UABAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 }
 
-void UABAnimInstance::Throwing()
+void UABAnimInstance::Throwing(UAnimMontage* Montage)
 {
-	
-	if (!Montage_IsPlaying(ThrowingMontage))
+	if (!Montage_IsPlaying(Montage))
 	{
-		Montage_Play(ThrowingMontage, 1.0f);
+		Montage_Play(Montage, 1.0f);
 		UE_LOG(LogTemp, Warning, TEXT("Throw Montage Playing"));
 	}
 }
 
-void UABAnimInstance::Spraying()
+
+void UABAnimInstance::Spraying(UAnimMontage* Montage)
 {
-	if (!SprayMontage)
+	if (!Montage_IsPlaying(Montage))
 	{
-		return;
-	}
-	if (!Montage_IsPlaying(SprayMontage))
-	{
-		Montage_Play(SprayMontage, 1.0f);
+		Montage_Play(Montage, 1.0f);
 		UE_LOG(LogTemp, Warning, TEXT("Spray Montage Playing"));
 	}
+}
+
+void UABAnimInstance::AnimNotify_DrawSpray()
+{
+	UWorld* World = GetWorld();
+	ASprayItem* Spray = World->SpawnActor<ASprayItem>(ASprayItem::StaticClass());
+	Spray->DrawSpray();
+	Spray->Destroy();
 }

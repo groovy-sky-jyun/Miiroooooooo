@@ -19,7 +19,13 @@ class MIIROOOOOOOO_API ASprayItem : public AUsableItem
 public:
 	virtual void UseItem() override;
 	virtual bool bIsAvailableItem() override;
+
+	UFUNCTION()
+	void PlayAnimation();
+
+	UFUNCTION()
 	void DrawSpray();
+
 
 private:
 	// Hit result
